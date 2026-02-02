@@ -20,7 +20,7 @@ void Init()
    
    // TODO: Set up connection
 
-   FlashcardsApplication flashcardsApplication = new();
+   FlashcardsApplication flashcardsApplication = new FlashcardsApplication();
 }
 
 void Shutdown()
