@@ -6,16 +6,22 @@ using Microsoft.Data.SqlClient;
 
 internal class SqlServerDatabaseInitializer : IDatabaseInitializer
 {
-    private readonly string _connectionString = "Data Source=localhost;Initial Catalog=master;User ID=sa;Password=Password!;TrustServerCertificate=True;";
-
-    public SqlServerDatabaseInitializer()
-    {
-    }
+    private string _connectionString;
 
     public async Task InitializeDatabaseAsync()
     {
         try
         {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+            {
+                DataSource = "localhost",
+                UserID = "sa",
+                Password = "Password!",
+                InitialCatalog = "master",
+                TrustServerCertificate = true
+            };
+
+            _connectionString = builder.ConnectionString;
             await CreateTables();
         }
         catch (SqlException ex)
