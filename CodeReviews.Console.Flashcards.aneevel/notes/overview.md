@@ -14,16 +14,26 @@
 - [ ] Create FlashCard Application class
   - [x] Provide initial prompt
   - [x] Loop until quit is selected
-  - [ ] Provide link to Flashcard module
-    - [ ] Provide link to CREATE module
+  - [ ] Implement Flashcard module
+    - [ ] Implement CREATE module
+      - [x] Provide link to CREATE module
+      - [ ] Provide ability to CREATE flashcard
+        - [ ] Connects to DB
+        - [ ] Allows user to input FRONT, BACK and STACK
+        - [ ] Stores Entity in DB
     - [ ] Provide link to READ module
     - [ ] Provide link to DELETE module
     - [ ] Provide link to EDIT module
-  - [ ] Provide link to Stack module
-    - [ ] Provide link to CREATE module
-    - [ ] Provide link to DELETE module
-    - [ ] Provide link to EDIT module
-    - [ ] Provide link to READ module
-  - [ ] Provide link to Study Session module
-    - [ ] Provide link to CREATE module
-    - [ ] Provide link to READ module
+  - [ ] Implement Stack module
+    - [ ] Implement link to CREATE module
+      - [ ] Provide link to CREATE module
+      - [ ] Provide ability to CREATE stack
+        - [ ] Connects to DB
+        - [ ] Allows user to input NAME
+        - [ ] Stores Entity in DB
+    - [x] Provide link to DELETE module
+    - [x] Provide link to EDIT module
+    - [x] Provide link to READ module
+  - [x] Provide link to Study Session module
+    - [x] Provide link to CREATE module
+    - [x] Provide link to READ module

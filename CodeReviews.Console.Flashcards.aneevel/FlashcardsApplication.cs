@@ -93,7 +93,7 @@ public class FlashcardsApplication
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks");
                 break;
             case "Create A Stack":
-                AnsiConsole.Clear();
+                CreateStack();
                 AnsiConsole.MarkupLine("[green]Creating[/] a Stack");
                 break;
             case "Edit A Stack":
@@ -141,5 +141,16 @@ public class FlashcardsApplication
                 throw new InvalidOperationException("Unknown Menu Option provided!");
 
         }
+    }
+
+    private void CreateStack()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("[green]Creating[/] a new Stack...");
+
+        string stackName = AnsiConsole.Ask<string>("What should the [green]name[/] of this stack be?");
+
+
     }
 }
