@@ -1,5 +1,6 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
+using CodeReviews.Console.Flashcards.aneevel.Enums;
 using Microsoft.Data.SqlClient;
 using Spectre.Console;
 
@@ -44,7 +45,7 @@ public class FlashcardsApplication
         }
         catch (Exception e)
         {
-            throw; // TODO handle exception
+            AnsiConsole.MarkupLine("[red]An error occured:[/]" + e.Message);
         }
     }
 
@@ -54,30 +55,32 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("Welcome to the [green]Flashcards Module[/]. Please choose the [blue]operation[/] you would like to perform.");
 
-        string option = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select an [blue]operation[/]:")
-                    .AddChoices("View All Flashcards", "Create A Flashcard", "Edit A Flashcard", "Delete A Flashcard", "Exit to Main Menu"));
+        FlashcardMenuOptions option = AnsiConsole.Prompt(
+            new SelectionPrompt<FlashcardMenuOptions>()
+                .Title("Select an [blue]operation[/]:")
+                .AddChoices(Enum.GetValues<FlashcardMenuOptions>())
+                .UseConverter(option => option.GetDisplayName())
+        );
 
         switch  (option)
         {
-            case "View All Flashcards":
+            case FlashcardMenuOptions.ViewAllFlashcards:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Flashcards");
                 break;
-            case "Create A Flashcard":
+            case FlashcardMenuOptions.AddAFlashcard:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Creating[/] a Flashcard");
                 break;
-            case "Edit A Flashcard":
+            case FlashcardMenuOptions.EditAFlashcard:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Editing[/] a Flashcard");
                 break;
-            case "Delete A Flashcard":
+            case FlashcardMenuOptions.RemoveAFlashcard:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Deleting[/] a Flashcard");
                 break;
-            case "Exit to Main Menu":
+            case FlashcardMenuOptions.ExitFlashcard:
                 AnsiConsole.Clear();
                 return;
             default:
