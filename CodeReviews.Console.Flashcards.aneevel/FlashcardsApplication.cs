@@ -7,16 +7,11 @@ namespace CodeReviews.Console.Flashcards.aneevel;
 
 public class FlashcardsApplication
 {
-    public FlashcardsApplication()
-    {
-        Run();
-    }
-
-    private async void Run()
+    public async Task Run()
     {
         try
         {
-            SqlServerDatabaseInitializer sqlServerDatabaseInitializer = new SqlServerDatabaseInitializer("");
+            SqlServerDatabaseInitializer sqlServerDatabaseInitializer = new SqlServerDatabaseInitializer();
             await sqlServerDatabaseInitializer.InitializeDatabaseAsync();
             while (true)
             {

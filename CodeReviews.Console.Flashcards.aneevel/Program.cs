@@ -2,28 +2,29 @@
 
 try
 {
-    Init();
-    Shutdown();
+    await Init();
+    await Shutdown();
 }
 catch (Exception ex)
 {
-    System.Console.WriteLine($"There was an error during application execution: {ex.Message}");
+    Console.WriteLine($"There was an error during application execution: {ex.Message}");
 }
 
-void Init()
+async Task Init()
 {
    // TODO: Implement configuration file load
    
    // TODO: Implement Logger load
    
-   // TODO: Setup DI 
+   // TODO: Setup DI
    
    // TODO: Set up connection
 
    FlashcardsApplication flashcardsApplication = new FlashcardsApplication();
+   await flashcardsApplication.Run();
 }
 
-void Shutdown()
+async Task Shutdown()
 {
     // TODO: Gracefully shutdown any services/logs/connections
 }

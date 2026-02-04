@@ -8,6 +8,7 @@
         - [ ] Plan out DI implementation
     - Keep it simpler than last application (KISS)
     - Use global error handler
+    - Use batch database operations?
 
 ## Implementation Plan
 - [x] Set up Initial App
