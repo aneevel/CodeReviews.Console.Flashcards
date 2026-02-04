@@ -1,4 +1,6 @@
+using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
+using Microsoft.Data.SqlClient;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel;
@@ -10,31 +12,44 @@ public class FlashcardsApplication
         Run();
     }
 
-    private void Run()
+    private async void Run()
     {
-        while (true)
+        try
         {
-            string option = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select a [green]module[/]:")
-                    .AddChoices("Flashcard Operations", "Stack Operations", "Study Session Operations", "Quit"));
-
-            switch (option)
+            SqlServerDatabaseInitializer sqlServerDatabaseInitializer = new SqlServerDatabaseInitializer("");
+            await sqlServerDatabaseInitializer.InitializeDatabaseAsync();
+            while (true)
             {
-                case "Flashcard Operations":
-                    DisplayFlashcardOperations();
-                    break;
-                case "Stack Operations":
-                    DisplayStackOperations();
-                    break;
-                case "Study Session Operations":
-                    DisplayStudySessionOperations();
-                    break;
-                case "Quit":
-                    return;
-                default:
-                    throw new InvalidOperationException("Unknown Menu Option provided!");
+                string option = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Select a [green]module[/]:")
+                        .AddChoices("Flashcard Operations", "Stack Operations", "Study Session Operations", "Quit"));
+
+                switch (option)
+                {
+                    case "Flashcard Operations":
+                        DisplayFlashcardOperations();
+                        break;
+                    case "Stack Operations":
+                        DisplayStackOperations();
+                        break;
+                    case "Study Session Operations":
+                        DisplayStudySessionOperations();
+                        break;
+                    case "Quit":
+                        return;
+                    default:
+                        throw new InvalidOperationException("Unknown Menu Option provided!");
+                }
             }
+        }
+        catch (SqlException ex)
+        {
+            AnsiConsole.MarkupLine("[red]An error occured:[/]" + ex.Message);
+        }
+        catch (Exception e)
+        {
+            throw; // TODO handle exception
         }
     }
 
