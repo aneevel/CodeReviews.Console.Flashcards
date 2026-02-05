@@ -1,6 +1,7 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
+using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using Microsoft.Data.SqlClient;
 using Spectre.Console;
 
