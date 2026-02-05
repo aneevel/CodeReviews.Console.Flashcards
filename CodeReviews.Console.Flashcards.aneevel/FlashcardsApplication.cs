@@ -17,23 +17,23 @@ public class FlashcardsApplication
             await sqlServerDatabaseInitializer.InitializeDatabaseAsync();
             while (true)
             {
-                string option = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
+                MainMenuOptions option = AnsiConsole.Prompt(
+                    new SelectionPrompt<MainMenuOptions>()
                         .Title("Select a [green]module[/]:")
-                        .AddChoices("Flashcard Operations", "Stack Operations", "Study Session Operations", "Quit"));
+                        .AddChoices(Enum.GetValues<MainMenuOptions>()));
 
                 switch (option)
                 {
-                    case "Flashcard Operations":
+                    case MainMenuOptions.EnterFlashcardModule:
                         DisplayFlashcardOperations();
                         break;
-                    case "Stack Operations":
+                    case MainMenuOptions.EnterStacksModule:
                         DisplayStackOperations();
                         break;
-                    case "Study Session Operations":
+                    case MainMenuOptions.EnterStudySessionsModule:
                         DisplayStudySessionOperations();
                         break;
-                    case "Quit":
+                    case MainMenuOptions.ExitApplication:
                         return;
                     default:
                         throw new InvalidOperationException("Unknown Menu Option provided!");

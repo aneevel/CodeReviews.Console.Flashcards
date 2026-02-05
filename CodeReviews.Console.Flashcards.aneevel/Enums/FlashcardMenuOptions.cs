@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Enums;
 
-public enum FlashcardMenuOptions
+internal enum FlashcardMenuOptions
 {
    [Display(Name = "View All Flashcards")]
    ViewAllFlashcards,
