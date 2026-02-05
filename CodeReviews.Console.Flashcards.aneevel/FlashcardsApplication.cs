@@ -81,7 +81,7 @@ public class FlashcardsApplication
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Deleting[/] a Flashcard");
                 break;
-            case FlashcardMenuOptions.ExitFlashcard:
+            case FlashcardMenuOptions.ExitFlashcardModule:
                 AnsiConsole.Clear();
                 return;
             default:
@@ -95,31 +95,31 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("Welcome to the [green]Stacks Module[/]! Please choose an [blue]operation[/] you would like to perform.");
 
-        string option = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
+        StackMenuOptions option = AnsiConsole.Prompt(
+            new SelectionPrompt<StackMenuOptions>()
                 .Title("Select an [blue]operation[/]:")
-                .AddChoices("View All Stacks", "Create A Stack", "Edit A Stack", "Delete A Stack", "Exit to Main Menu")
+                .AddChoices(Enum.GetValues<StackMenuOptions>())
         );
 
         switch (option)
         {
-            case "View All Stacks":
+            case StackMenuOptions.ViewAllStacks:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks");
                 break;
-            case "Create A Stack":
+            case StackMenuOptions.AddAStack:
                 CreateStack();
                 AnsiConsole.MarkupLine("[green]Creating[/] a Stack");
                 break;
-            case "Edit A Stack":
+            case StackMenuOptions.EditAStack:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Editing[/] a Stack");
                 break;
-            case "Delete A Stack":
+            case StackMenuOptions.RemoveAStack:
                 AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Deleting[/] a Stack");
+                AnsiConsole.MarkupLine("[green]Removing[/] a Stack");
                 break;
-            case "Exit to Main Menu":
+            case StackMenuOptions.ExitStackModule:
                 AnsiConsole.Clear();
                 return;
             default:

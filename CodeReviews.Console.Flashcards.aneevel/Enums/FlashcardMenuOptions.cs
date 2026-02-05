@@ -13,5 +13,5 @@ internal enum FlashcardMenuOptions
    [Display(Name = "Edit A Flashcard")]
    EditAFlashcard,
    [Display(Name = "Exit Flashcard Module")]
-   ExitFlashcard,
+   ExitFlashcardModule,
 }
