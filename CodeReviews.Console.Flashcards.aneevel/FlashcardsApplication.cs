@@ -133,23 +133,23 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("Welcome to the [green]Study Sessions Module[/]! Please choose an [blue] operation[/] you would like to perform.");
 
-        string option = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
+        StudySessionMenuOptions option = AnsiConsole.Prompt(
+            new SelectionPrompt<StudySessionMenuOptions>()
                 .Title("Select an [blue]operation[/]:")
-                .AddChoices("View All Sessions", "Start Session", "Exit to Main Menu")
+                .AddChoices(Enum.GetValues<StudySessionMenuOptions>())
         );
 
         switch (option)
         {
-            case "View All Sessions":
+            case StudySessionMenuOptions.ViewAllStudySessions:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Sessions");
                 break;
-            case "Start Session":
+            case StudySessionMenuOptions.StartAStudySession:
                 AnsiConsole.Clear();
                 AnsiConsole.MarkupLine("[green]Starting[/] a new Session");
                 break;
-            case "Exit to Main Menu":
+            case StudySessionMenuOptions.ExitStudySessionModule:
                 AnsiConsole.Clear();
                 return;
             default:
