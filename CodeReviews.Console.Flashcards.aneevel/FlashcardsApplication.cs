@@ -167,5 +167,7 @@ public class FlashcardsApplication
         string stackName = AnsiConsole.Ask<string>("What should the [green]name[/] of this stack be?");
 
         StudyStack studyStack = new StudyStack(stackName);
+
+
     }
 }
