@@ -1,7 +1,9 @@
 namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
-public class StudyStack(string name)
+internal class StudyStack
 {
-    public int? Id { get; set; }
-    public string? Name { get; set; } = name;
+    public int StudyStackID { get; set; }
+    public string Name { get; set; }
+
+    public virtual ICollection<Flashcard>? Flashcards { get; set; }
 }

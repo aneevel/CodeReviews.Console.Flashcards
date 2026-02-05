@@ -1,7 +1,11 @@
 ## General Notes:
     - Use DTOs
+    - Use Contexts
+        - Document use of "Navigation Properties"
+        - Document basic use case
     - Use SQL Server
     - Try out Repository Pattern
+        - Document basic usage
     - Try out Dependency Injection
         - [ ] Read article on CSharpAcademy
         - [ ] Check out other relevant sources
