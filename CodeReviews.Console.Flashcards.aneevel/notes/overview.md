@@ -31,7 +31,7 @@
     - [ ] Provide link to EDIT module
   - [ ] Implement Stack module
     - [ ] Implement link to CREATE module
-      - [ ] Provide link to CREATE module
+      - [x] Provide link to CREATE module
       - [ ] Provide ability to CREATE stack
         - [ ] Connects to DB
         - [ ] Allows user to input NAME
@@ -39,6 +39,7 @@
     - [x] Provide link to DELETE module
     - [x] Provide link to EDIT module
     - [x] Provide link to READ module
+    - [ ] Enforce unique constraint at DB level
   - [x] Provide link to Study Session module
     - [x] Provide link to CREATE module
     - [x] Provide link to READ module

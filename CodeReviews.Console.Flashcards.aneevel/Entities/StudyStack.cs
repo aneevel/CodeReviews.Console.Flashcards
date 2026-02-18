@@ -6,4 +6,5 @@ internal class StudyStack
     public string Name { get; set; }
 
     public virtual ICollection<Flashcard>? Flashcards { get; set; }
+    // TODO: Add Study Sessions
 }

@@ -6,7 +6,7 @@ internal interface IStudyStackRepository : IDisposable
 {
    Task<IEnumerable<StudyStack>> GetStudyStacksAsync();
    Task<StudyStack> GetStudyStackAsync(string stackName);
-   Task InsertStudyStackAsync(StudyStack studyStack);
+   Task<int> InsertStudyStackAsync(StudyStack studyStack);
    Task UpdateStudyStackAsync(StudyStack studyStack);
    Task DeleteStudyStackAsync(StudyStack studyStack);
 }
