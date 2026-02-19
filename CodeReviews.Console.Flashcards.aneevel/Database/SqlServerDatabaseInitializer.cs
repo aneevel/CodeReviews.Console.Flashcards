@@ -16,7 +16,7 @@ internal class SqlServerDatabaseInitializer : IDatabaseInitializer
             {
                 DataSource = "localhost",
                 UserID = "sa",
-                Password = "Password!",
+                Password = "password1@",
                 InitialCatalog = "master",
                 TrustServerCertificate = true
             };
@@ -54,51 +54,51 @@ internal class SqlServerDatabaseInitializer : IDatabaseInitializer
             await using SqlConnection connection = new SqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            string stackSql = """
-                              IF OBJECT_ID('dbo.Stacks') IS NULL CREATE TABLE dbo.Stacks (
-                                StackId INTEGER PRIMARY KEY IDENTITY(1, 1),
-                                Name VARCHAR(255) NOT NULL);
-                              """;
+            const string studyStackSql = """
+                                         IF OBJECT_ID('dbo.StudyStacks') IS NULL CREATE TABLE dbo.StudyStacks (
+                                           StudyStackId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                           Name VARCHAR(255) NOT NULL UNIQUE);
+                                         """;
 
-            await using SqlCommand stackCommand = new SqlCommand(stackSql, connection);
+            await using SqlCommand stackCommand = new SqlCommand(studyStackSql, connection);
             await stackCommand.ExecuteNonQueryAsync();
 
-            string flashcardSql = """
-                                  IF OBJECT_ID('dbo.Flashcards') IS NULL CREATE TABLE dbo.Flashcards (
-                                              FlashcardId INTEGER PRIMARY KEY IDENTITY(1, 1),
-                                              FrontText VARCHAR(255) NOT NULL,
-                                              BackText VARCHAR(255) NOT NULL,
-                                              StackId INTEGER NOT NULL
-                                              CONSTRAINT FK_Flashcards_Stacks FOREIGN KEY (StackId) 
-                                              REFERENCES dbo.Stacks (StackId) 
-                                              ON DELETE CASCADE
-                                              ON UPDATE CASCADE
-                                         );
-                                  """;
+            const string flashcardSql = """
+                                        IF OBJECT_ID('dbo.Flashcards') IS NULL CREATE TABLE dbo.Flashcards (
+                                                    FlashcardId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                                    FrontText VARCHAR(255) NOT NULL,
+                                                    BackText VARCHAR(255) NOT NULL,
+                                                    StudyStackId INTEGER NOT NULL
+                                                    CONSTRAINT FK_Flashcards_StudyStacks FOREIGN KEY (StudyStackId) 
+                                                    REFERENCES dbo.StudyStacks (StudyStackId) 
+                                                    ON DELETE CASCADE
+                                                    ON UPDATE CASCADE
+                                               );
+                                        """;
 
             await using SqlCommand flashcardCommand = new SqlCommand(flashcardSql, connection);
             await flashcardCommand.ExecuteNonQueryAsync();
 
-            string studySessionSql = """
-                                     IF OBJECT_ID('dbo.StudySessions') IS NULL CREATE TABLE dbo.StudySessions (
-                                        StudySessionId INTEGER PRIMARY KEY IDENTITY(1, 1),
-                                        Date DATETIME NOT NULL,
-                                        Score INTEGER NOT NULL);
-                                     """;
+            const string studySessionSql = """
+                                           IF OBJECT_ID('dbo.StudySessions') IS NULL CREATE TABLE dbo.StudySessions (
+                                              StudySessionId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                              Date DATETIME NOT NULL,
+                                              Score INTEGER NOT NULL);
+                                           """;
 
             await using SqlCommand studySessionCommand = new SqlCommand(studySessionSql, connection);
             await studySessionCommand.ExecuteNonQueryAsync();
 
-            string studySessionStackSql = """
-                                          IF OBJECT_ID('dbo.StudySessionStacks') IS NULL CREATE TABLE dbo.StudySessionStacks (
-                                            StudySessionStackID INTEGER PRIMARY KEY IDENTITY(1, 1),
-                                            StackID INTEGER NOT NULL,
-                                            StudySessionID INTEGER NOT NULL,
-                                            CONSTRAINT FK_StudySessionStacks_StudySessions FOREIGN KEY (StudySessionId)
-                                            REFERENCES dbo.StudySessions (StudySessionId),
-                                            CONSTRAINT FK_StudySessionStacks_Stacks FOREIGN KEY (StackId)
-                                            REFERENCES dbo.Stacks (StackId));
-                                          """;
+            const string studySessionStackSql = """
+                                                IF OBJECT_ID('dbo.StudySessionStacks') IS NULL CREATE TABLE dbo.StudySessionStacks (
+                                                  StudySessionStackID INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                                  StudyStackID INTEGER NOT NULL,
+                                                  StudySessionID INTEGER NOT NULL,
+                                                  CONSTRAINT FK_StudySessionStacks_StudySessions FOREIGN KEY (StudySessionId)
+                                                  REFERENCES dbo.StudySessions (StudySessionId),
+                                                  CONSTRAINT FK_StudySessionStacks_StudyStacks FOREIGN KEY (StudyStackId)
+                                                  REFERENCES dbo.StudyStacks (StudyStackId));
+                                                """;
 
             await using SqlCommand studySessionStackCommand = new SqlCommand(studySessionStackSql, connection);
             await studySessionStackCommand.ExecuteNonQueryAsync();

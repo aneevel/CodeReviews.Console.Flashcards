@@ -1,7 +1,9 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
-using CodeReviews.Console.Flashcards.aneevel.Entities;
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
+using CodeReviews.Console.Flashcards.aneevel.DTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
+using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 using Microsoft.Data.SqlClient;
 using Spectre.Console;
 
@@ -9,10 +11,21 @@ namespace CodeReviews.Console.Flashcards.aneevel;
 
 public class FlashcardsApplication
 {
+    private StudyStackRepository studyStackRepository;
     public async Task Run()
     {
         try
         {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+            {
+                DataSource = "localhost",
+                UserID = "sa",
+                Password = "password1@",
+                InitialCatalog = "master",
+                TrustServerCertificate = true
+            };
+            studyStackRepository = new StudyStackRepository(builder.ConnectionString);
+
             SqlServerDatabaseInitializer sqlServerDatabaseInitializer = new SqlServerDatabaseInitializer();
             await sqlServerDatabaseInitializer.InitializeDatabaseAsync();
             while (true)
@@ -28,7 +41,7 @@ public class FlashcardsApplication
                         DisplayFlashcardOperations();
                         break;
                     case MainMenuOptions.EnterStacksModule:
-                        DisplayStackOperations();
+                        await DisplayStackOperations();
                         break;
                     case MainMenuOptions.EnterStudySessionsModule:
                         DisplayStudySessionOperations();
@@ -89,7 +102,7 @@ public class FlashcardsApplication
         }
     }
 
-    private void DisplayStackOperations()
+    private async Task DisplayStackOperations()
     {
         AnsiConsole.Clear();
 
@@ -108,7 +121,7 @@ public class FlashcardsApplication
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks");
                 break;
             case StackMenuOptions.AddAStack:
-                CreateStack();
+                await CreateStack();
                 AnsiConsole.MarkupLine("[green]Creating[/] a Stack");
                 break;
             case StackMenuOptions.EditAStack:
@@ -158,7 +171,7 @@ public class FlashcardsApplication
         }
     }
 
-    private void CreateStack()
+    private async Task CreateStack()
     {
         AnsiConsole.Clear();
 
@@ -166,8 +179,8 @@ public class FlashcardsApplication
 
         string stackName = AnsiConsole.Ask<string>("What should the [green]name[/] of this stack be?");
 
-        StudyStack studyStack = new StudyStack(stackName);
+        CreateStudyStackDto stack = new CreateStudyStackDto(stackName);
 
-
+        await studyStackRepository.InsertStudyStackAsync(stack.FromCreateStudyStackDto());
     }
 }

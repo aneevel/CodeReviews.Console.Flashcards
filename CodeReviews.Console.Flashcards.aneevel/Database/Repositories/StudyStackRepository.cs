@@ -10,6 +10,7 @@ internal class StudyStackRepository : IStudyStackRepository
     {
         _connectionString = connectionString;
     }
+
     public void Dispose()
     {
         throw new NotImplementedException();

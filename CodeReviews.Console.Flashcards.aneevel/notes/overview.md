@@ -1,14 +1,16 @@
 ## General Notes:
     - Use DTOs
+        - [ ] Document basic use case/usage
     - Use Contexts
-        - Document use of "Navigation Properties"
-        - Document basic use case
+        - [ ] Document use of "Navigation Properties"
+        - [ ] Document basic use case/usage
     - Use SQL Server
     - Try out Repository Pattern
-        - Document basic usage
+        - [ ] Document basic use case/usage
     - Try out Dependency Injection
         - [ ] Read article on CSharpAcademy
         - [ ] Check out other relevant sources
+        - [ ] Document basic use case/usage
         - [ ] Plan out DI implementation
     - Keep it simpler than last application (KISS)
     - Use global error handler
@@ -43,3 +45,4 @@
   - [x] Provide link to Study Session module
     - [x] Provide link to CREATE module
     - [x] Provide link to READ module
+  - [ ] Load DB credentials from config file
