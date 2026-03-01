@@ -33,7 +33,8 @@ public class FlashcardsApplication
                 MainMenuOptions option = AnsiConsole.Prompt(
                     new SelectionPrompt<MainMenuOptions>()
                         .Title("Select a [green]module[/]:")
-                        .AddChoices(Enum.GetValues<MainMenuOptions>()));
+                        .AddChoices(Enum.GetValues<MainMenuOptions>())
+                        .UseConverter(option => option.GetDisplayName()));
 
                 switch (option)
                 {
