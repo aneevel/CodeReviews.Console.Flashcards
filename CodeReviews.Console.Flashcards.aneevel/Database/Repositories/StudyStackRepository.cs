@@ -1,24 +1,44 @@
+using System.Data;
+using System.Diagnostics;
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using Microsoft.Data.SqlClient;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudyStackRepository : IStudyStackRepository
+internal class StudyStackRepository(string connectionString) : IStudyStackRepository
 {
-    private readonly string _connectionString;
-    public StudyStackRepository(string connectionString)
-    {
-        _connectionString = connectionString;
-    }
-
     public void Dispose()
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<StudyStack>> GetStudyStacksAsync()
+    public async Task<List<StudyStack>> GetStudyStacksAsync()
     {
-        throw new NotImplementedException();
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand(
+                $"SELECT * FROM dbo.StudyStacks", connection);
+
+            List<StudyStack> studyStacks = [];
+            await using SqlDataReader reader = await command.ExecuteReaderAsync();
+            while (reader.Read())
+            {
+                studyStacks.Add(new StudyStack { Name = reader.GetString("Name") });
+            }
+
+            return studyStacks;
+        }
+        catch (Exception ex)
+        {
+           string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
+                            $"Method: {nameof(InsertStudyStackAsync)}\n" +
+                            $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
     }
 
     public Task<StudyStack> GetStudyStackAsync(string stackName)
@@ -30,7 +50,7 @@ internal class StudyStackRepository : IStudyStackRepository
     {
         try
         {
-            await using SqlConnection connection = new SqlConnection(_connectionString);
+            await using SqlConnection connection = new SqlConnection(connectionString);
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
@@ -43,7 +63,7 @@ internal class StudyStackRepository : IStudyStackRepository
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                             $"Method: {nameof(InsertStudyStackAsync)}\n" +
                             $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
-            throw;
+            throw new Exception(errorMessage, ex);
         }
 
     }

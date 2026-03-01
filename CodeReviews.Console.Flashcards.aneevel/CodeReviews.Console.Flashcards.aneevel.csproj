@@ -10,6 +10,8 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
       <PackageReference Include="Spectre.Console" Version="0.54.0" />
+      <PackageReference Include="System.Linq" Version="4.3.0" />
+      <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
     </ItemGroup>
 
 </Project>

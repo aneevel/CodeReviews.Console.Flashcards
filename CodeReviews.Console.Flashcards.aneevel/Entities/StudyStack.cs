@@ -6,7 +6,7 @@ internal class StudyStack
 {
     public int StudyStackId { get; set; }
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
     public ICollection<Flashcard>? Flashcards { get; set; }
     // TODO: Add Study Sessions

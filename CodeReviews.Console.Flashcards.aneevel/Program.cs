@@ -10,6 +10,8 @@ catch (Exception ex)
     Console.WriteLine($"There was an error during application execution: {ex.Message}");
 }
 
+return;
+
 async Task Init()
 {
    // TODO: Implement configuration file load

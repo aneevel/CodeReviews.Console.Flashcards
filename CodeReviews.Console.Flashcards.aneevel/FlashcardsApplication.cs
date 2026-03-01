@@ -1,6 +1,7 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 using CodeReviews.Console.Flashcards.aneevel.DTOs;
+using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
@@ -11,6 +12,7 @@ namespace CodeReviews.Console.Flashcards.aneevel;
 
 public class FlashcardsApplication
 {
+
     private StudyStackRepository studyStackRepository;
     public async Task Run()
     {
@@ -113,12 +115,14 @@ public class FlashcardsApplication
             new SelectionPrompt<StackMenuOptions>()
                 .Title("Select an [blue]operation[/]:")
                 .AddChoices(Enum.GetValues<StackMenuOptions>())
+                .UseConverter(option => option.GetDisplayName())
+
         );
 
         switch (option)
         {
             case StackMenuOptions.ViewAllStacks:
-                AnsiConsole.Clear();
+                await ViewStacks();
                 AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks");
                 break;
             case StackMenuOptions.AddAStack:
@@ -183,5 +187,36 @@ public class FlashcardsApplication
         CreateStudyStackDto stack = new CreateStudyStackDto(stackName);
 
         await studyStackRepository.InsertStudyStackAsync(stack.FromCreateStudyStackDto());
+    }
+
+    private async Task ViewStacks()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks...");
+
+        List<StudyStack> studyStacks = await studyStackRepository.GetStudyStacksAsync();
+
+        // TODO: Will refactor to UI
+
+        // TODO: Handle zero edge case
+        Table table = new Table()
+            .HideHeaders()
+            .Border(TableBorder.None);
+
+        table.AddColumn(new TableColumn("Name"));
+
+        foreach (StudyStack studyStack in studyStacks)
+        {
+            table.AddRow(studyStack.Name);
+        }
+
+        Panel panel = new Panel(table)
+            .Header(new PanelHeader("Study Stacks"))
+            .DoubleBorder()
+            .BorderColor(Color.Purple)
+            .Expand();
+
+        AnsiConsole.Write(panel);
     }
 }

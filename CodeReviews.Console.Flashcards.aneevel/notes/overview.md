@@ -34,15 +34,31 @@
   - [ ] Implement Stack module
     - [ ] Implement link to CREATE module
       - [x] Provide link to CREATE module
-      - [ ] Provide ability to CREATE stack
+      - [x] Provide ability to CREATE stack
+        - [x] Connects to DB
+        - [x] Allows user to input NAME
+        - [x] Stores Entity in DB
+    - [ ] Implement DELETE module
+      - [x] Provide link to DELETE module
+      - [ ] Provide ability to DELETE stack
         - [ ] Connects to DB
-        - [ ] Allows user to input NAME
-        - [ ] Stores Entity in DB
-    - [x] Provide link to DELETE module
+        - [ ] Allows user to select from IDs
+        - [ ] Removes Entity from DB
+          - [ ] Check back that this cascades to Study Sessions later
     - [x] Provide link to EDIT module
-    - [x] Provide link to READ module
+    - [ ] Implement READ module
+      - [x] Provide link to READ module
+      - [ ] Provide ability to READ stacks
+        - [x] Connects to DB
+        - [ ] Allows user to view list of all stacks (number in list (not DB id!), name)
+          - [ ] Display raw entities
+          - [ ] Display from DTO
+          - [ ] Use ID as part of available stacks
     - [ ] Enforce unique constraint at DB level
   - [x] Provide link to Study Session module
     - [x] Provide link to CREATE module
     - [x] Provide link to READ module
   - [ ] Load DB credentials from config file
+  - [ ] Utilize ConfigurationBuilder
+  - [ ] Set up Logging interface
+  - [ ] Use DI for services/repos
