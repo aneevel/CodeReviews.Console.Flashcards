@@ -50,10 +50,11 @@
       - [x] Provide link to READ module
       - [ ] Provide ability to READ stacks
         - [x] Connects to DB
-        - [ ] Allows user to view list of all stacks (number in list (not DB id!), name)
-          - [ ] Display raw entities
+        - [x] Allows user to view list of all stacks (number in list (not DB id!), name)
+          - [x] Display raw entities
           - [ ] Display from DTO
           - [ ] Use ID as part of available stacks
+          - [ ] Provide navigation/filter options
     - [ ] Enforce unique constraint at DB level
   - [x] Provide link to Study Session module
     - [x] Provide link to CREATE module

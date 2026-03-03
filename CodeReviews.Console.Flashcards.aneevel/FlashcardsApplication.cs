@@ -123,15 +123,12 @@ public class FlashcardsApplication
         {
             case StackMenuOptions.ViewAllStacks:
                 await ViewStacks();
-                AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks");
                 break;
             case StackMenuOptions.AddAStack:
                 await CreateStack();
-                AnsiConsole.MarkupLine("[green]Creating[/] a Stack");
                 break;
             case StackMenuOptions.EditAStack:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Editing[/] a Stack");
+                await EditStacks();
                 break;
             case StackMenuOptions.RemoveAStack:
                 AnsiConsole.Clear();
@@ -218,5 +215,32 @@ public class FlashcardsApplication
             .Expand();
 
         AnsiConsole.Write(panel);
+    }
+
+    private async Task EditStacks()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("Please select a Stack to [green]Edit[/]...");
+
+        List<StudyStack> studyStacks = await studyStackRepository.GetStudyStacksAsync();
+
+        StudyStack selectedStack = AnsiConsole.Prompt(new SelectionPrompt<StudyStack>()
+            .Title("Which Stack do you want to edit?")
+            .AddChoices(studyStacks)
+        );
+
+        char answer = AnsiConsole.Ask<char>($"You would like to edit {selectedStack}?");
+
+        if (answer == 'y')
+        {
+            // TODO: Move to edit
+
+        }
+        else if (answer == 'n')
+        {
+            AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
+            return;
+        }
     }
 }
