@@ -4,16 +4,13 @@ using CodeReviews.Console.Flashcards.aneevel.Entities;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 
-internal static class FromDto
+internal static class ToDto
 {
-    extension(CreateStudyStackDto dto)
+    extension(StudyStack studyStack)
     {
-        public StudyStack FromCreateStudyStackDto()
+        public ReadStudyStackDto FromStudyStack()
         {
-            return new StudyStack
-            {
-                Name = dto.Name,
-            };
+            return new ReadStudyStackDto(studyStack.Name);
         }
     }
 }

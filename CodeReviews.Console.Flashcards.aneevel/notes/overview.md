@@ -63,3 +63,7 @@
   - [ ] Utilize ConfigurationBuilder
   - [ ] Set up Logging interface
   - [ ] Use DI for services/repos
+  - [ ] Testing!
+    - [ ] Test Stack Functionality
+    - [ ] Test Card Functionality
+    - [ ] Test Study Session Functionality
