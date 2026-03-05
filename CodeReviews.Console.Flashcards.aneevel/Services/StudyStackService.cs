@@ -1,0 +1,25 @@
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
+using CodeReviews.Console.Flashcards.aneevel.Entities;
+using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
+
+namespace CodeReviews.Console.Flashcards.aneevel.Services;
+
+internal class StudyStackService(IStudyStackRepository repository) : IStudyStackService
+{
+    private readonly IStudyStackRepository _repository = repository;
+
+    public async Task<int> AddStudyStackAsync(CreateStudyStackDto dto)
+    {
+        return await repository.InsertStudyStackAsync(dto.FromCreateStudyStackDto());
+    }
+
+    public async Task<List<ReadStudyStackDto>> GetStudyStacksAsync()
+    {
+        List<StudyStack> studyStacks = await _repository.GetStudyStacksAsync();
+
+        return studyStacks
+            .Select(stack => stack.FromStudyStack())
+            .ToList();
+    }
+}
