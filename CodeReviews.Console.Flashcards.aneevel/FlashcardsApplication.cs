@@ -1,20 +1,22 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
-using CodeReviews.Console.Flashcards.aneevel.DTOs;
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
+using CodeReviews.Console.Flashcards.aneevel.Services;
+using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel;
 
 public class FlashcardsApplication
 {
-
-    private StudyStackRepository studyStackRepository;
+    private ServiceProvider _serviceProvider;
     public async Task Run()
     {
         try
@@ -22,15 +24,21 @@ public class FlashcardsApplication
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
             {
                 DataSource = "localhost",
-                UserID = "sa",
-                Password = "password1@",
+                UserID = "sa", Password = "password1@",
                 InitialCatalog = "master",
                 TrustServerCertificate = true
             };
-            studyStackRepository = new StudyStackRepository(builder.ConnectionString);
 
-            SqlServerDatabaseInitializer sqlServerDatabaseInitializer = new SqlServerDatabaseInitializer();
-            await sqlServerDatabaseInitializer.InitializeDatabaseAsync();
+            // TODO: this should all be top level
+            IServiceCollection services = new ServiceCollection()
+                .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
+                .AddScoped<IStudyStackRepository, StudyStackRepository>()
+                .AddScoped<IStudyStackService, StudyStackService>();
+
+            _serviceProvider = services.BuildServiceProvider();
+
+            await _serviceProvider.GetRequiredService<IDatabaseInitializer>().InitializeDatabaseAsync();
+
             while (true)
             {
                 MainMenuOptions option = AnsiConsole.Prompt(
@@ -184,7 +192,7 @@ public class FlashcardsApplication
 
         CreateStudyStackDto stack = new CreateStudyStackDto(stackName);
 
-        await studyStackRepository.InsertStudyStackAsync(stack.FromCreateStudyStackDto());
+        await _serviceProvider.GetRequiredService<IStudyStackService>().AddStudyStackAsync(stack);
     }
 
     private async Task ViewStacks()
@@ -193,7 +201,7 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks...");
 
-        List<StudyStack> studyStacks = await studyStackRepository.GetStudyStacksAsync();
+        List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
 
         // TODO: Will refactor to UI
 
@@ -204,7 +212,7 @@ public class FlashcardsApplication
 
         table.AddColumn(new TableColumn("Name"));
 
-        foreach (StudyStack studyStack in studyStacks)
+        foreach (ReadStudyStackDto studyStack in studyStacks)
         {
             table.AddRow(studyStack.Name);
         }
@@ -224,9 +232,9 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("Please select a Stack to [green]Edit[/]...");
 
-        List<ReadStudyStackDto> studyStacks = await studyStackRepository.GetStudyStacksAsync();
+        List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
 
-        StudyStack selectedStack = AnsiConsole.Prompt(new SelectionPrompt<StudyStack>()
+        ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
             .Title("Which Stack do you want to edit?")
             .AddChoices(studyStacks)
         );
@@ -241,7 +249,6 @@ public class FlashcardsApplication
         else if (answer == 'n')
         {
             AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
-            return;
         }
     }
 }
