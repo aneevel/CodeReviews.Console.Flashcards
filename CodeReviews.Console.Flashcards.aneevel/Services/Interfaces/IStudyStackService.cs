@@ -1,6 +1,9 @@
+using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
+
 namespace CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
-/**internal interface IStudyStackService
+internal interface IStudyStackService
 {
-    private Task<int> AddStackAsync(CreateStudyStackDto dto);
-}*/
+    public Task<int> AddStudyStackAsync(CreateStudyStackDto dto);
+    public Task<List<ReadStudyStackDto>> GetStudyStacksAsync();
+}

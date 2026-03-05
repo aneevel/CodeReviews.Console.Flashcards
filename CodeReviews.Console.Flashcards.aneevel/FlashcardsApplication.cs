@@ -224,7 +224,7 @@ public class FlashcardsApplication
 
         AnsiConsole.MarkupLine("Please select a Stack to [green]Edit[/]...");
 
-        List<StudyStack> studyStacks = await studyStackRepository.GetStudyStacksAsync();
+        List<ReadStudyStackDto> studyStacks = await studyStackRepository.GetStudyStacksAsync();
 
         StudyStack selectedStack = AnsiConsole.Prompt(new SelectionPrompt<StudyStack>()
             .Title("Which Stack do you want to edit?")
