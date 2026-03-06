@@ -1,27 +1,16 @@
+using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database;
 
 using Microsoft.Data.SqlClient;
 
-internal class SqlServerDatabaseInitializer : IDatabaseInitializer
+internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionString) : IDatabaseInitializer
 {
-    private string _connectionString;
-
     public async Task InitializeDatabaseAsync()
     {
         try
         {
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-            {
-                DataSource = "localhost",
-                UserID = "sa",
-                Password = "password1@",
-                InitialCatalog = "master",
-                TrustServerCertificate = true
-            };
-
-            _connectionString = builder.ConnectionString;
             await CreateTablesAsync();
         }
         catch (SqlException ex)
@@ -51,7 +40,7 @@ internal class SqlServerDatabaseInitializer : IDatabaseInitializer
         try
         {
 
-            await using SqlConnection connection = new SqlConnection(_connectionString);
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
             await connection.OpenAsync();
 
             const string studyStackSql = """

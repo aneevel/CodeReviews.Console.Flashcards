@@ -2,22 +2,18 @@ using System.Data;
 using System.Diagnostics;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
+using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudyStackRepository(string connectionString) : IStudyStackRepository
+internal class StudyStackRepository(ConnectionString connectionString) : IStudyStackRepository
 {
-    public void Dispose()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<List<StudyStack>> GetStudyStacksAsync()
     {
         try
         {
-            await using SqlConnection connection = new SqlConnection(connectionString);
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
@@ -50,7 +46,7 @@ internal class StudyStackRepository(string connectionString) : IStudyStackReposi
     {
         try
         {
-            await using SqlConnection connection = new SqlConnection(connectionString);
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(

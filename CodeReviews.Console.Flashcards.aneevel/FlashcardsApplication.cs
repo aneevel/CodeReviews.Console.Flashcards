@@ -8,13 +8,14 @@ using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Services;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel;
 
-public class FlashcardsApplication
+public sealed class FlashcardsApplication
 {
     private ServiceProvider _serviceProvider;
     public async Task Run()
@@ -29,8 +30,11 @@ public class FlashcardsApplication
                 TrustServerCertificate = true
             };
 
+            ConnectionString connectionString = new ConnectionString(builder.ConnectionString);
+
             // TODO: this should all be top level
             IServiceCollection services = new ServiceCollection()
+                .AddSingleton(connectionString)
                 .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
                 .AddScoped<IStudyStackService, StudyStackService>();
@@ -200,30 +204,43 @@ public class FlashcardsApplication
         AnsiConsole.Clear();
 
         AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks...");
-
-        List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
-
-        // TODO: Will refactor to UI
-
-        // TODO: Handle zero edge case
-        Table table = new Table()
-            .HideHeaders()
-            .Border(TableBorder.None);
-
-        table.AddColumn(new TableColumn("Name"));
-
-        foreach (ReadStudyStackDto studyStack in studyStacks)
+        
+        try
         {
-            table.AddRow(studyStack.Name);
+            List<ReadStudyStackDto> studyStacks =
+                await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
+            
+            // TODO: Will refactor to UI
+
+            // TODO: Handle zero edge case
+            Table table = new Table()
+                .HideHeaders()
+                .Border(TableBorder.None);
+
+            table.AddColumn(new TableColumn("Name"));
+
+            foreach (ReadStudyStackDto studyStack in studyStacks)
+            {
+                table.AddRow(studyStack.Name);
+            }
+
+            Panel panel = new Panel(table)
+                .Header(new PanelHeader("Study Stacks"))
+                .DoubleBorder()
+                .BorderColor(Color.Purple)
+                .Expand();
+
+            AnsiConsole.Write(panel);
         }
-
-        Panel panel = new Panel(table)
-            .Header(new PanelHeader("Study Stacks"))
-            .DoubleBorder()
-            .BorderColor(Color.Purple)
-            .Expand();
-
-        AnsiConsole.Write(panel);
+        catch (InvalidOperationException ex)
+        {
+            string errorMessage = $"""
+                                   Class: {nameof(FlashcardsApplication)}
+                                   Method:  {nameof(ViewStacks)}
+                                   There was an error accessing the ViewStudyStacks module: {ex.Message}
+                                   """;
+            AnsiConsole.MarkupLine(errorMessage);
+        }
     }
 
     private async Task EditStacks()
