@@ -254,9 +254,10 @@ public sealed class FlashcardsApplication
         ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
             .Title("Which Stack do you want to edit?")
             .AddChoices(studyStacks)
+            .UseConverter(studyStack => studyStack.Name)
         );
 
-        char answer = AnsiConsole.Ask<char>($"You would like to edit {selectedStack}?");
+        char answer = AnsiConsole.Ask<char>($"You would like to edit [blue]{selectedStack.Name}[/]? (Y/N)");
 
         if (answer == 'y')
         {
