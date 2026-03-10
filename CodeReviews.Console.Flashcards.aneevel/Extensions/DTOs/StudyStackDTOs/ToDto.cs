@@ -10,7 +10,7 @@ internal static class ToDto
     {
         public ReadStudyStackDto FromStudyStack()
         {
-            return new ReadStudyStackDto(studyStack.Name);
+            return new ReadStudyStackDto(studyStack.Name, studyStack.Id);
         }
     }
 }

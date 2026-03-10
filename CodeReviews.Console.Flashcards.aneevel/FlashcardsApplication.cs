@@ -258,14 +258,18 @@ public sealed class FlashcardsApplication
 
         char answer = AnsiConsole.Ask<char>($"You would like to edit [blue]{selectedStack}[/]? (Y/N)");
 
-        if (answer == 'y')
+        switch (char.ToLower(answer))
         {
-            // TODO: Move to edit
-
-        }
-        else if (answer == 'n')
-        {
-            AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
+            case 'y':
+            {
+                // TODO: Move to edit
+                string newStackName = AnsiConsole.Ask<string>("What should the new name of the stack be?");
+                await _serviceProvider.GetRequiredService<IStudyStackService>().UpdateStudyStackAsync(selectedStack, newStackName);
+                break;
+            }
+            case 'n':
+                AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
+                break;
         }
     }
 }

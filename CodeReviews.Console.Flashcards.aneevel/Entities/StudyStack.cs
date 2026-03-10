@@ -4,7 +4,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
 internal class StudyStack
 {
-    public int StudyStackId { get; set; }
+    public int Id { get; set; }
     [Required]
     public required string Name { get; init; }
 
