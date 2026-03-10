@@ -7,6 +7,6 @@ internal interface IStudyStackRepository
    Task<List<StudyStack>> GetStudyStacksAsync();
    Task<StudyStack> GetStudyStackAsync(string stackName);
    Task<int> InsertStudyStackAsync(StudyStack studyStack);
-   Task UpdateStudyStackAsync(StudyStack studyStack);
+   Task<int> UpdateStudyStackAsync(StudyStack studyStack);
    Task DeleteStudyStackAsync(StudyStack studyStack);
 }

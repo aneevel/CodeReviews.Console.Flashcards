@@ -264,7 +264,8 @@ public sealed class FlashcardsApplication
             {
                 // TODO: Move to edit
                 string newStackName = AnsiConsole.Ask<string>("What should the new name of the stack be?");
-                await _serviceProvider.GetRequiredService<IStudyStackService>().UpdateStudyStackAsync(selectedStack, newStackName);
+                await _serviceProvider.GetRequiredService<IStudyStackService>().UpdateStudyStackAsync(
+                    new UpdateStudyStackDto(newStackName, selectedStack.Id));
                 break;
             }
             case 'n':

@@ -1,4 +1,3 @@
-using CodeReviews.Console.Flashcards.aneevel.DTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 
@@ -13,6 +12,18 @@ internal static class FromDto
             return new StudyStack
             {
                 Name = dto.Name,
+            };
+        }
+    }
+
+    extension(UpdateStudyStackDto dto)
+    {
+        public StudyStack FromUpdateStudyStackDto()
+        {
+            return new StudyStack()
+            {
+                Name = dto.Name,
+                Id = dto.Id
             };
         }
     }

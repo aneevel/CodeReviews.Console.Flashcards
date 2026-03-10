@@ -64,9 +64,26 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
 
     }
 
-    public Task UpdateStudyStackAsync(StudyStack studyStack)
+    public async Task<int> UpdateStudyStackAsync(StudyStack studyStack)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand(
+                $"UPDATE dbo.StudyStacks SET Name = @Name WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Name", studyStack.Name);
+            command.Parameters.AddWithValue("@Id", studyStack.Id);
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
+                                  $"Method: {nameof(UpdateStudyStackAsync)}\n" +
+                                  $"An error occurred during an attempt to update a Study Stack to the database: {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
     }
 
     public Task DeleteStudyStackAsync(StudyStack studyStack)

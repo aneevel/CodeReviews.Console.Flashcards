@@ -22,8 +22,8 @@ internal class StudyStackService(IStudyStackRepository repository) : IStudyStack
             .ToList();
     }
 
-    public Task<int> UpdateStudyStackAsync(ReadStudyStackDto selectedStack, string newStackName)
+    public async Task<int> UpdateStudyStackAsync(UpdateStudyStackDto dto)
     {
-
+        return await repository.UpdateStudyStackAsync(dto.FromUpdateStudyStackDto());
     }
 }
