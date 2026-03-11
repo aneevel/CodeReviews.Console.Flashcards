@@ -2,10 +2,8 @@ using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
-using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
-using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Services;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
@@ -143,9 +141,8 @@ public sealed class FlashcardsApplication
             case StackMenuOptions.EditAStack:
                 await EditStacks();
                 break;
-            case StackMenuOptions.RemoveAStack:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Removing[/] a Stack");
+            case StackMenuOptions.DeleteAStack:
+                await DeleteStacks();
                 break;
             case StackMenuOptions.ExitStackModule:
                 AnsiConsole.Clear();
@@ -263,7 +260,7 @@ public sealed class FlashcardsApplication
             .AddChoices(studyStacks)
         );
 
-        char answer = AnsiConsole.Ask<char>($"You would like to edit [blue]{selectedStack}[/]? (Y/N)");
+        char answer = AnsiConsole.Ask<char>($"You would like to [blue]edit {selectedStack}[/]? (Y/N)");
 
         switch (char.ToLower(answer))
         {
@@ -279,5 +276,39 @@ public sealed class FlashcardsApplication
                 AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
                 break;
         }
+    }
+
+    private async Task DeleteStacks()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("Please select a Stack to [red]Delete[/]...");
+
+        List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
+
+        if (studyStacks.Count == 0)
+        {
+            // TODO: Provide wait for key press input
+            // WaitForContinue...
+            return;
+        }
+
+        ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
+            .Title("Which Stack do you want to delete?")
+            .AddChoices(studyStacks)
+        );
+
+        char answer = AnsiConsole.Ask<char>($"You would like to [red]delete[/] [blue]{selectedStack}[/]? (Y/N)");
+
+        switch (char.ToLower(answer))
+        {
+            case 'y':
+            {
+                // TODO: Move to UI
+                await _serviceProvider.GetRequiredService<IStudyStackService>().DeleteStackAsync(new DeleteStudyStackDto(selectedStack.Id));
+                break;
+            }
+        }
+
     }
 }

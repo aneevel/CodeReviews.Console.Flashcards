@@ -47,20 +47,20 @@
           - [ ] Check back that this cascades to Study Sessions later
     - [ ] Implement EDIT module
       - [x] Provide link to EDIT module
-      - [ ] Provide ability to select Stack to EDIT
+      - [x] Provide ability to select Stack to EDIT
         - [x] Proceed to happy path
-        - [ ] Handle no stacks case
-        - [ ] Handle aborted case
-      - [ ] Implement Stack EDIT
-        - [ ] Can change NAME of stack
-            - [ ] Provides input prompts
-              - [ ] Input validation
+        - [x] Handle no stacks case
+        - [x] Handle aborted case
+      - [x] Implement Stack EDIT
+        - [x] Can change NAME of stack
+            - [x] Provides input prompts
+              - [x] Input validation
                 - [x] Handle happy path
-                - [ ] Handle sad path
-            - [ ] Save to DB
-              - [ ] Implement at Service level
-                - [ ] Use raw entity
-                - [ ] Use DTO
+                - [x] Handle sad path
+            - [x] Save to DB
+              - [x] Implement at Service level
+                - [x] Use raw entity
+                - [x] Use DTO
     - [ ] Implement READ module
       - [x] Provide link to READ module
       - [ ] Provide ability to READ stacks
