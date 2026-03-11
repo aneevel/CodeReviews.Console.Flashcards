@@ -27,4 +27,15 @@ internal static class FromDto
             };
         }
     }
+
+    extension(DeleteStudyStackDto dto)
+    {
+        public StudyStack FromDeleteStudyStackDto()
+        {
+            return new StudyStack()
+            {
+                Id = dto.Id,
+            };
+        }
+    }
 }

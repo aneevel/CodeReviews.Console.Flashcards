@@ -305,7 +305,7 @@ public sealed class FlashcardsApplication
             case 'y':
             {
                 // TODO: Move to UI
-                await _serviceProvider.GetRequiredService<IStudyStackService>().DeleteStackAsync(new DeleteStudyStackDto(selectedStack.Id));
+                await _serviceProvider.GetRequiredService<IStudyStackService>().DeleteStudyStackAsync(new DeleteStudyStackDto(selectedStack.Id));
                 break;
             }
         }

@@ -7,4 +7,5 @@ internal interface IStudyStackService
     public Task<int> AddStudyStackAsync(CreateStudyStackDto stackDto);
     public Task<List<ReadStudyStackDto>> GetStudyStacksAsync();
     public Task<int> UpdateStudyStackAsync(UpdateStudyStackDto stackDto);
+    public Task<int> DeleteStudyStackAsync(DeleteStudyStackDto  stackDto);
 }

@@ -37,11 +37,6 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
         }
     }
 
-    public Task<StudyStack> GetStudyStackAsync(string stackName)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<int> InsertStudyStackAsync(StudyStack studyStack)
     {
         try
@@ -81,13 +76,29 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
         {
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                                   $"Method: {nameof(UpdateStudyStackAsync)}\n" +
-                                  $"An error occurred during an attempt to update a Study Stack to the database: {ex.Message}";
+                                  $"An error occurred during an attempt to update a Study Stack from the database: {ex.Message}";
             throw new Exception(errorMessage, ex);
         }
     }
 
-    public Task DeleteStudyStackAsync(StudyStack studyStack)
+    public async Task<int> DeleteStudyStackAsync(StudyStack studyStack)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand(
+                $"DELETE FROM dbo.StudyStacks WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", studyStack.Id);
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
+                                  $"Method: {nameof(DeleteStudyStackAsync)}\n" +
+                                  $"An error occurred during an attempt to delete a Study Stack from the database: {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
     }
 }

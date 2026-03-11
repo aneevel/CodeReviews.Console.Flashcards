@@ -25,7 +25,11 @@ internal class StudyStackService(IStudyStackRepository repository) : IStudyStack
 
     public async Task<int> UpdateStudyStackAsync(UpdateStudyStackDto stackDto)
     {
-        AnsiConsole.WriteLine($"Updating StudyStack {stackDto}");
         return await repository.UpdateStudyStackAsync(stackDto.FromUpdateStudyStackDto());
+    }
+
+    public async Task<int> DeleteStudyStackAsync(DeleteStudyStackDto stackDto)
+    {
+        return await repository.DeleteStudyStackAsync(stackDto.FromDeleteStudyStackDto());
     }
 }
