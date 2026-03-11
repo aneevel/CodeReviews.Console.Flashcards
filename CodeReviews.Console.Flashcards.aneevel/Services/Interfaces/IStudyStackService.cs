@@ -4,7 +4,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 internal interface IStudyStackService
 {
-    public Task<int> AddStudyStackAsync(CreateStudyStackDto dto);
+    public Task<int> AddStudyStackAsync(CreateStudyStackDto stackDto);
     public Task<List<ReadStudyStackDto>> GetStudyStacksAsync();
-    public Task<int> UpdateStudyStackAsync(UpdateStudyStackDto selectedStack);
+    public Task<int> UpdateStudyStackAsync(UpdateStudyStackDto stackDto);
 }

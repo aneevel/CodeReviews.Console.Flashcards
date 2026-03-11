@@ -9,9 +9,9 @@ namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
 internal class StudyStackService(IStudyStackRepository repository) : IStudyStackService
 {
-    public async Task<int> AddStudyStackAsync(CreateStudyStackDto dto)
+    public async Task<int> AddStudyStackAsync(CreateStudyStackDto stackDto)
     {
-        return await repository.InsertStudyStackAsync(dto.FromCreateStudyStackDto());
+        return await repository.InsertStudyStackAsync(stackDto.FromCreateStudyStackDto());
     }
 
     public async Task<List<ReadStudyStackDto>> GetStudyStacksAsync()
@@ -23,9 +23,9 @@ internal class StudyStackService(IStudyStackRepository repository) : IStudyStack
             .ToList();
     }
 
-    public async Task<int> UpdateStudyStackAsync(UpdateStudyStackDto dto)
+    public async Task<int> UpdateStudyStackAsync(UpdateStudyStackDto stackDto)
     {
-        AnsiConsole.WriteLine($"Updating StudyStack {dto}");
-        return await repository.UpdateStudyStackAsync(dto.FromUpdateStudyStackDto());
+        AnsiConsole.WriteLine($"Updating StudyStack {stackDto}");
+        return await repository.UpdateStudyStackAsync(stackDto.FromUpdateStudyStackDto());
     }
 }
