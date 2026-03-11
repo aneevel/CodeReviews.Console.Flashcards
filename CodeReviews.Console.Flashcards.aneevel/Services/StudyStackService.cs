@@ -3,6 +3,7 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
+using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
@@ -24,6 +25,7 @@ internal class StudyStackService(IStudyStackRepository repository) : IStudyStack
 
     public async Task<int> UpdateStudyStackAsync(UpdateStudyStackDto dto)
     {
+        AnsiConsole.WriteLine($"Updating StudyStack {dto}");
         return await repository.UpdateStudyStackAsync(dto.FromUpdateStudyStackDto());
     }
 }

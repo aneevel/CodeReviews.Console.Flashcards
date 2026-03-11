@@ -23,7 +23,7 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
             await using SqlDataReader reader = await command.ExecuteReaderAsync();
             while (reader.Read())
             {
-                studyStacks.Add(new StudyStack { Name = reader.GetString("Name") });
+                studyStacks.Add(new StudyStack { Name = reader.GetString("Name"), Id = reader.GetInt32("Id") });
             }
 
             return studyStacks;

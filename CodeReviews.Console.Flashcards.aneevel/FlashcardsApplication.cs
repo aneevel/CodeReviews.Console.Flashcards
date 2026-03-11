@@ -251,6 +251,13 @@ public sealed class FlashcardsApplication
 
         List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
 
+        if (studyStacks.Count == 0)
+        {
+            // TODO: Provide wait for key press input
+            // WaitForContinue...
+            return;
+        }
+
         ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
             .Title("Which Stack do you want to edit?")
             .AddChoices(studyStacks)
