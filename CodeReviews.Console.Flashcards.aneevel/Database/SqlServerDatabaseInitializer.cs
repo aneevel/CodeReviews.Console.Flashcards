@@ -45,7 +45,7 @@ internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionSt
 
             const string studyStackSql = """
                                          IF OBJECT_ID('dbo.StudyStacks') IS NULL CREATE TABLE dbo.StudyStacks (
-                                           StudyStackId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                           Id INTEGER PRIMARY KEY IDENTITY(1, 1),
                                            Name VARCHAR(255) NOT NULL UNIQUE);
                                          """;
 
@@ -54,12 +54,12 @@ internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionSt
 
             const string flashcardSql = """
                                         IF OBJECT_ID('dbo.Flashcards') IS NULL CREATE TABLE dbo.Flashcards (
-                                                    FlashcardId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                                    Id INTEGER PRIMARY KEY IDENTITY(1, 1),
                                                     FrontText VARCHAR(255) NOT NULL,
                                                     BackText VARCHAR(255) NOT NULL,
                                                     StudyStackId INTEGER NOT NULL
                                                     CONSTRAINT FK_Flashcards_StudyStacks FOREIGN KEY (StudyStackId) 
-                                                    REFERENCES dbo.StudyStacks (StudyStackId) 
+                                                    REFERENCES dbo.StudyStacks (Id) 
                                                     ON DELETE CASCADE
                                                     ON UPDATE CASCADE
                                                );
@@ -70,7 +70,7 @@ internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionSt
 
             const string studySessionSql = """
                                            IF OBJECT_ID('dbo.StudySessions') IS NULL CREATE TABLE dbo.StudySessions (
-                                              StudySessionId INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                              Id INTEGER PRIMARY KEY IDENTITY(1, 1),
                                               Date DATETIME NOT NULL,
                                               Score INTEGER NOT NULL);
                                            """;
@@ -80,13 +80,13 @@ internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionSt
 
             const string studySessionStackSql = """
                                                 IF OBJECT_ID('dbo.StudySessionStacks') IS NULL CREATE TABLE dbo.StudySessionStacks (
-                                                  StudySessionStackID INTEGER PRIMARY KEY IDENTITY(1, 1),
+                                                  Id INTEGER PRIMARY KEY IDENTITY(1, 1),
                                                   StudyStackID INTEGER NOT NULL,
                                                   StudySessionID INTEGER NOT NULL,
                                                   CONSTRAINT FK_StudySessionStacks_StudySessions FOREIGN KEY (StudySessionId)
-                                                  REFERENCES dbo.StudySessions (StudySessionId),
+                                                  REFERENCES dbo.StudySessions (Id),
                                                   CONSTRAINT FK_StudySessionStacks_StudyStacks FOREIGN KEY (StudyStackId)
-                                                  REFERENCES dbo.StudyStacks (StudyStackId));
+                                                  REFERENCES dbo.StudyStacks (Id));
                                                 """;
 
             await using SqlCommand studySessionStackCommand = new SqlCommand(studySessionStackSql, connection);

@@ -48,13 +48,14 @@
     - [ ] Implement EDIT module
       - [x] Provide link to EDIT module
       - [ ] Provide ability to select Stack to EDIT
-        - [ ] Proceed to happy path
+        - [x] Proceed to happy path
+        - [ ] Handle no stacks case
         - [ ] Handle aborted case
       - [ ] Implement Stack EDIT
         - [ ] Can change NAME of stack
             - [ ] Provides input prompts
               - [ ] Input validation
-                - [ ] Handle happy path
+                - [x] Handle happy path
                 - [ ] Handle sad path
             - [ ] Save to DB
               - [ ] Implement at Service level
