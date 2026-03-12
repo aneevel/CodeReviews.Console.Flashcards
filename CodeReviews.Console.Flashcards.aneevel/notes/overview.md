@@ -41,11 +41,11 @@
     - [ ] Implement DELETE module
       - [x] Provide link to DELETE module
       - [ ] Provide ability to DELETE stack
-        - [ ] Connects to DB
-        - [ ] Allows user to select from IDs
-        - [ ] Removes Entity from DB
+        - [x] Connects to DB
+        - [x] Allows user to select from IDs
+        - [x] Removes Entity from DB
           - [ ] Check back that this cascades to Study Sessions later
-    - [ ] Implement EDIT module
+    - [x] Implement EDIT module
       - [x] Provide link to EDIT module
       - [x] Provide ability to select Stack to EDIT
         - [x] Proceed to happy path
@@ -65,7 +65,7 @@
       - [x] Provide link to READ module
       - [ ] Provide ability to READ stacks
         - [x] Connects to DB
-        - [x] Allows user to view list of all stacks (number in list (not DB id!), name)
+        - [ ] Allows user to view list of all stacks (number in list (not DB id!), name)
           - [x] Display raw entities
           - [x] Display from DTO
           - [ ] Use ID as part of available stacks

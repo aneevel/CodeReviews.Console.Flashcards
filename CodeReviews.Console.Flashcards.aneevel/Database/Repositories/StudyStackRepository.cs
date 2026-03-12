@@ -21,7 +21,7 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
 
             List<StudyStack> studyStacks = [];
             await using SqlDataReader reader = await command.ExecuteReaderAsync();
-            while (reader.Read())
+            while (await reader.ReadAsync())
             {
                 studyStacks.Add(new StudyStack { Name = reader.GetString("Name"), Id = reader.GetInt32("Id") });
             }
@@ -76,7 +76,7 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
         {
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                                   $"Method: {nameof(UpdateStudyStackAsync)}\n" +
-                                  $"An error occurred during an attempt to update a Study Stack from the database: {ex.Message}";
+                                  $"An error occurred during an attempt to update a Study Stack to the database: {ex.Message}";
             throw new Exception(errorMessage, ex);
         }
     }

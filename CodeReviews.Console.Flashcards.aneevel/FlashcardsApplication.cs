@@ -93,8 +93,7 @@ public sealed class FlashcardsApplication
         switch  (option)
         {
             case FlashcardMenuOptions.ViewAllFlashcards:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Viewing[/] all Flashcards");
+                await ViewFlashcards();
                 break;
             case FlashcardMenuOptions.AddAFlashcard:
                 AnsiConsole.Clear();
@@ -310,5 +309,51 @@ public sealed class FlashcardsApplication
             }
         }
 
+    }
+
+    private async Task ViewFlashcards()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("[green]Viewing[/] all Flashcards...");
+
+        try
+        {
+            List<ReadFlashcardDto> flashcards =
+                await _serviceProvider.GetRequiredService<IFlashcardService>().GetFlashcardsAsync();
+
+            // TODO: Refactor to UI
+
+            // TODO: Handle zero edge case
+            Table table = new Table()
+                .HideHeaders()
+                .Border(TableBorder.None);
+
+            table.AddColumn(new TableColumn("Name"));
+            table.AddColumn(new TableColumn("Front"));
+            table.AddColumn(new TableColumn("Back"));
+
+            foreach (ReadFlashcardDto flashcard in flashcards)
+            {
+                table.AddRow([flashcard.Name, flashcard.Front, flashcard.Back]);
+            }
+
+            Panel panel = new Panel(table)
+                .Header(new PanelHeader("Flashcards"))
+                .DoubleBorder()
+                .BorderColor(Color.Purple)
+                .Expand();
+
+            AnsiConsole.Write(panel);
+        }
+        catch (InvalidOperationException ex)
+        {
+            string errorMessage = $"""
+                                   Class: {nameof(FlashcardsApplication)}
+                                   Method: {nameof(ViewFlashcards)}
+                                   There was an error accessing the ViewFlashcards module: {ex.Message}
+                                   """;
+            AnsiConsole.MarkupLine(errorMessage);
+        }
     }
 }
