@@ -22,13 +22,12 @@
   - [x] Provide initial prompt
   - [x] Loop until quit is selected
   - [ ] Implement Flashcard module
-    - [ ] Implement CREATE module
+    - [x] Implement CREATE module
       - [x] Provide link to CREATE module
-      - [ ] Provide ability to CREATE flashcard
-        - [ ] Connects to DB
-        - [ ] Allows user to input FRONT, BACK and STACK
-        - [ ] Stores Entity in DB
-    - [ ] Provide link to READ module
+      - [x] Provide ability to CREATE flashcard
+        - [x] Connects to DB
+        - [x] Allows user to input FRONT, BACK and STACK
+        - [x] Stores Entity in DB
     - [ ] Provide link to DELETE module
     - [ ] Provide link to EDIT module
   - [ ] Implement Stack module
@@ -45,6 +44,7 @@
         - [x] Allows user to select from IDs
         - [x] Removes Entity from DB
           - [ ] Check back that this cascades to Study Sessions later
+          - [ ] Check back that this cascades to Flashcards later
     - [x] Implement EDIT module
       - [x] Provide link to EDIT module
       - [x] Provide ability to select Stack to EDIT
@@ -77,7 +77,7 @@
   - [ ] Load DB credentials from config file
   - [ ] Utilize ConfigurationBuilder
   - [ ] Set up Logging interface
-  - [ ] Use DI for services/repos
+  - [x] Use DI for services/repos
   - [ ] Testing!
     - [ ] Test Stack Functionality
     - [ ] Test Card Functionality
