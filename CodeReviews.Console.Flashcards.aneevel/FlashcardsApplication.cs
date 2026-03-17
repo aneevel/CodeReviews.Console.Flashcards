@@ -52,7 +52,7 @@ public sealed class FlashcardsApplication
                 switch (option)
                 {
                     case MainMenuOptions.EnterFlashcardModule:
-                        DisplayFlashcardOperations();
+                        await DisplayFlashcardOperations();
                         break;
                     case MainMenuOptions.EnterStacksModule:
                         await DisplayStackOperations();
@@ -77,7 +77,7 @@ public sealed class FlashcardsApplication
         }
     }
 
-    private void DisplayFlashcardOperations()
+    private async Task<int> DisplayFlashcardOperations()
     {
         AnsiConsole.Clear();
 
@@ -93,11 +93,11 @@ public sealed class FlashcardsApplication
         switch  (option)
         {
             case FlashcardMenuOptions.ViewAllFlashcards:
-                await ViewFlashcards();
+                throw new NotImplementedException();
+                //await ViewFlashcards();
                 break;
             case FlashcardMenuOptions.AddAFlashcard:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Creating[/] a Flashcard");
+                await AddFlashcard();
                 break;
             case FlashcardMenuOptions.EditAFlashcard:
                 AnsiConsole.Clear();
@@ -311,7 +311,60 @@ public sealed class FlashcardsApplication
 
     }
 
-    private async Task ViewFlashcards()
+    private async Task CreateFlashcard()
+    {
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("Entering [green]Create Flashcard[/] Module...");
+
+        List<ReadStudyStackDto> studyStacks;
+        try
+        {
+            studyStacks =
+                await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
+
+            if (studyStacks.Count == 0)
+            {
+                AnsiConsole.MarkupLine("There are [red]No Study Stacks found.[/] Flashcards must have an" +
+                                       "associated Study Stack. Returning to main menu.");
+                return;
+            }
+
+        }
+        catch (InvalidCastException ex)
+        {
+            string errorMessage = $"""
+                                   Class: {nameof(FlashcardsApplication)}
+                                   Method: {nameof(CreateFlashcard)}
+                                   There was an error reading StudyStacks in the CreateFlashcard module: {ex.Message}
+                                   """;
+            AnsiConsole.MarkupLine(errorMessage);
+            return;
+        }
+
+        // TODO: Move to input validation helper
+        ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
+            .Title("Which Stack will this Flashcard belong to?")
+            .AddChoices(studyStacks)
+        );
+
+        // TODO: Move to input validation helper
+        string newFlashcardFrontText = AnsiConsole.Ask<string>("What should the [blue]Front[/] of the Flashcard be?");
+        string newFlashcardBackText = AnsiConsole.Ask<string>("What should the [blue]Back[/] of the Flashcard be?");
+
+        await _serviceProvider.GetRequiredService<IFlashcardService>()
+            .CreateFlashcardAsync(
+                new CreateFlashcardDto
+                {
+                    newFlashcardFrontText,
+                    newFlashcardBackText,
+                    selectedStack.Id
+                }
+            );
+
+    }
+
+    /**private async Task ViewFlashcards()
     {
         AnsiConsole.Clear();
 
@@ -355,5 +408,5 @@ public sealed class FlashcardsApplication
                                    """;
             AnsiConsole.MarkupLine(errorMessage);
         }
-    }
+    }*/
 }
