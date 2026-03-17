@@ -6,8 +6,8 @@ internal enum FlashcardMenuOptions
 {
    [Display(Name = "View All Flashcards")]
    ViewAllFlashcards,
-   [Display(Name = "Add A Flashcard")]
-   AddAFlashcard,
+   [Display(Name = "Create A Flashcard")]
+   CreateAFlashcard,
    [Display(Name = "Remove A Flashcard")]
    RemoveAFlashcard,
    [Display(Name = "Edit A Flashcard")]

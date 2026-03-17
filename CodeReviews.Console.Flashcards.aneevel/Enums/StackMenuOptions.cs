@@ -6,8 +6,8 @@ internal enum StackMenuOptions
 {
    [Display(Name = "View All Stacks")]
    ViewAllStacks,
-   [Display(Name = "Add A Stack")]
-   AddAStack,
+   [Display(Name = "Create A Stack")]
+   CreateAStack,
    [Display(Name = "Delete A Stack")]
    DeleteAStack,
    [Display(Name = "Edit A Stack")]

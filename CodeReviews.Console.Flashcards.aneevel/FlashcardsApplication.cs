@@ -96,7 +96,7 @@ public sealed class FlashcardsApplication
                 throw new NotImplementedException();
                 //await ViewFlashcards();
                 break;
-            case FlashcardMenuOptions.AddAFlashcard:
+            case FlashcardMenuOptions.CreateAFlashcard:
                 await CreateFlashcard();
                 break;
             case FlashcardMenuOptions.EditAFlashcard:
@@ -134,7 +134,7 @@ public sealed class FlashcardsApplication
             case StackMenuOptions.ViewAllStacks:
                 await ViewStacks();
                 break;
-            case StackMenuOptions.AddAStack:
+            case StackMenuOptions.CreateAStack:
                 await CreateStack();
                 break;
             case StackMenuOptions.EditAStack:
