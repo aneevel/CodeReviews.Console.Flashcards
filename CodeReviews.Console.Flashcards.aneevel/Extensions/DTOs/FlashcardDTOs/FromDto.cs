@@ -17,4 +17,18 @@ internal static class FromDto
             };
         }
     }
+
+    extension(UpdateFlashcardDto dto)
+    {
+        public Flashcard FromUpdateFlashcardDto()
+        {
+            return new Flashcard()
+            {
+                Id = dto.Id,
+                FrontText = dto.FrontText,
+                BackText = dto.BackText,
+                StudyStackId = dto.StudyStackId
+            };
+        }
+    }
 }

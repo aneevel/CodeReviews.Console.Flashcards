@@ -4,5 +4,8 @@ namespace CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 internal interface IFlashcardService
 {
-   public Task<int> CreateFlashcardAsync(CreateFlashcardDto flashcardDto);
+   Task<int> CreateFlashcardAsync(CreateFlashcardDto flashcardDto);
+   Task<List<ReadFlashcardDto>> GetFlashcardsAsync();
+   Task<int> UpdateFlashcardAsync(UpdateFlashcardDto flashcardDto);
+
 }

@@ -4,8 +4,6 @@ namespace CodeReviews.Console.Flashcards.aneevel.Enums;
 
 internal enum FlashcardMenuOptions
 {
-   [Display(Name = "View All Flashcards")]
-   ViewAllFlashcards,
    [Display(Name = "Create A Flashcard")]
    CreateAFlashcard,
    [Display(Name = "Remove A Flashcard")]

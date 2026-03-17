@@ -33,6 +33,8 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                             $"Method: {nameof(InsertStudyStackAsync)}\n" +
                             $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
+           // TODO: Log
+           // ? Return what??? TODO: Remove
             throw new Exception(errorMessage, ex);
         }
     }
@@ -54,7 +56,8 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                             $"Method: {nameof(InsertStudyStackAsync)}\n" +
                             $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
-            throw new Exception(errorMessage, ex);
+            // TODO: Should be error logger
+            return -1;
         }
 
     }
@@ -77,7 +80,8 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                                   $"Method: {nameof(UpdateStudyStackAsync)}\n" +
                                   $"An error occurred during an attempt to update a Study Stack to the database: {ex.Message}";
-            throw new Exception(errorMessage, ex);
+            // TODO: Log
+            return -1;
         }
     }
 

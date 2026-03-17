@@ -139,7 +139,7 @@ public sealed class FlashcardsApplication
                 await EditStack();
                 break;
             case StackMenuOptions.DeleteAStack:
-                await DeleteStacks();
+                await DeleteStack();
                 break;
             case StackMenuOptions.ExitStackModule:
                 AnsiConsole.Clear();
@@ -237,12 +237,13 @@ public sealed class FlashcardsApplication
         }
     }
 
-    private async Task EditStacks()
+    private async Task EditStack()
     {
         AnsiConsole.Clear();
 
         AnsiConsole.MarkupLine("Please select a Stack to [green]Edit[/]...");
 
+        // TODO: Should be in a try/catch
         List<ReadStudyStackDto> studyStacks = await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
 
         if (studyStacks.Count == 0)
@@ -275,7 +276,7 @@ public sealed class FlashcardsApplication
         }
     }
 
-    private async Task DeleteStacks()
+    private async Task DeleteStack()
     {
         AnsiConsole.Clear();
 
@@ -413,5 +414,8 @@ public sealed class FlashcardsApplication
         }
 
     }
+<<<<<<< HEAD
     }
+=======
+>>>>>>> 16cc63c ([feat]: implement module for Edit Flashcard)
 }
