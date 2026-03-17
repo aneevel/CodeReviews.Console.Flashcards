@@ -38,9 +38,28 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
         }
     }
 
-    public Task<int> InsertFlashcardAsync(Flashcard flashcard)
+    public async Task<int> InsertFlashcardAsync(Flashcard flashcard)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand(
+                $"INSERT INTO dbo.Flashcards (StudyStackId, FrontText, BackText) VALUES (@StudyStackId, @FrontText, @BackText)",
+                connection);
+            command.Parameters.AddWithValue("@StudyStackId", flashcard.StudyStackId);
+            command.Parameters.AddWithValue("@FrontText", flashcard.FrontText);
+            command.Parameters.AddWithValue("@BackText", flashcard.BackText);
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
+                                  $"Method: {nameof(InsertFlashcardAsync)}\n" +
+                                  $"An error occurred during an attempt to add a Flashcard to the database: {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
     }
 
     public Task<int> UpdateFlashcardAsync(Flashcard flashcard)

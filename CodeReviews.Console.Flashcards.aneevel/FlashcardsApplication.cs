@@ -1,6 +1,7 @@
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
@@ -35,7 +36,9 @@ public sealed class FlashcardsApplication
                 .AddSingleton(connectionString)
                 .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
-                .AddScoped<IStudyStackService, StudyStackService>();
+                .AddScoped<IStudyStackService, StudyStackService>()
+                .AddScoped<IFlashcardRepository, FlashcardRepository>()
+                .AddScoped<IFlashcardService, FlashcardService>();
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -192,7 +195,7 @@ public sealed class FlashcardsApplication
 
         CreateStudyStackDto stack = new CreateStudyStackDto(stackName);
 
-        await _serviceProvider.GetRequiredService<IStudyStackService>().AddStudyStackAsync(stack);
+        await _serviceProvider.GetRequiredService<IStudyStackService>().CreateStudyStackAsync(stack);
     }
 
     private async Task ViewStacks()
@@ -326,7 +329,7 @@ public sealed class FlashcardsApplication
             if (studyStacks.Count == 0)
             {
                 AnsiConsole.MarkupLine("There are [red]No Study Stacks found.[/] Flashcards must have an" +
-                                       "associated Study Stack. Returning to main menu.");
+                                       " associated Study Stack. Returning to main menu.");
                 return;
             }
 
@@ -354,12 +357,11 @@ public sealed class FlashcardsApplication
 
         await _serviceProvider.GetRequiredService<IFlashcardService>()
             .CreateFlashcardAsync(
-                new CreateFlashcardDto
-                {
+                new CreateFlashcardDto(
+                    selectedStack.Id,
                     newFlashcardFrontText,
-                    newFlashcardBackText,
-                    selectedStack.Id
-                }
+                    newFlashcardBackText
+                )
             );
 
     }

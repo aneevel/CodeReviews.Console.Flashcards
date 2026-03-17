@@ -3,13 +3,12 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
-using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
 internal class StudyStackService(IStudyStackRepository repository) : IStudyStackService
 {
-    public async Task<int> AddStudyStackAsync(CreateStudyStackDto stackDto)
+    public async Task<int> CreateStudyStackAsync(CreateStudyStackDto stackDto)
     {
         return await repository.InsertStudyStackAsync(stackDto.FromCreateStudyStackDto());
     }
