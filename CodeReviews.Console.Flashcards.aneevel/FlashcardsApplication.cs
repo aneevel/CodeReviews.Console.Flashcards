@@ -77,7 +77,7 @@ public sealed class FlashcardsApplication
         }
     }
 
-    private async Task<int> DisplayFlashcardOperations()
+    private async Task DisplayFlashcardOperations()
     {
         AnsiConsole.Clear();
 
@@ -97,7 +97,7 @@ public sealed class FlashcardsApplication
                 //await ViewFlashcards();
                 break;
             case FlashcardMenuOptions.AddAFlashcard:
-                await AddFlashcard();
+                await CreateFlashcard();
                 break;
             case FlashcardMenuOptions.EditAFlashcard:
                 AnsiConsole.Clear();
@@ -109,7 +109,7 @@ public sealed class FlashcardsApplication
                 break;
             case FlashcardMenuOptions.ExitFlashcardModule:
                 AnsiConsole.Clear();
-                return;
+                break;
             default:
                 throw new InvalidOperationException("Unknown Menu Option provided!");
         }
