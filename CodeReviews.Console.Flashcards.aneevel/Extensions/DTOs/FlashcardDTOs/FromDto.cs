@@ -31,4 +31,15 @@ internal static class FromDto
             };
         }
     }
+
+    extension(DeleteFlashcardDto dto)
+    {
+        public Flashcard FromDeleteFlashcardDto()
+        {
+            return new Flashcard()
+            {
+                Id = dto.Id,
+            };
+        }
+    }
 }

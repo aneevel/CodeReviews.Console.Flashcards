@@ -6,10 +6,7 @@ internal class Flashcard
 {
     [Required]
     public int Id { get; init; }
-    [Required]
-    public required string FrontText  { get; init; }
-    [Required]
-    public required string BackText { get; init; }
-    [Required]
-    public required int StudyStackId { get; init; }
+    public string? FrontText  { get; init; }
+    public string? BackText { get; init; }
+    public int? StudyStackId { get; init; }
 }

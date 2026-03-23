@@ -95,8 +95,25 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
         }
     }
 
-    public Task<int> DeleteFlashcardAsync(Flashcard flashcard)
+    public async Task<int> DeleteFlashcardAsync(Flashcard flashcard)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand(
+                $"DELETE FROM dbo.Flashcards WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", flashcard.Id);
+            return await command.ExecuteNonQueryAsync();
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
+                                  $"Method: {nameof(DeleteFlashcardAsync)}\n" +
+                                  $"An error occurred during an attempt to delete a flashcard in the database: {ex.Message}";
+            // TODO: Log this
+            return -1;
+        }
     }
 }

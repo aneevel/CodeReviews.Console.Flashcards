@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 
-public record ReadFlashcardDto([Required] int Id, [Required] string FrontText, [Required] string BackText)
+public record ReadFlashcardDto([Required] int Id, [Required] string? FrontText, [Required] string? BackText)
 {
     public override string ToString()
     {

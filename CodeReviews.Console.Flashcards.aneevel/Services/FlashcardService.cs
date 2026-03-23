@@ -26,4 +26,9 @@ internal class FlashcardService(IFlashcardRepository repository) : IFlashcardSer
     {
         return await repository.UpdateFlashcardAsync(flashcardDto.FromUpdateFlashcardDto());
     }
+
+    public async Task<int> DeleteFlashcardAsync(DeleteFlashcardDto flashcardDto)
+    {
+        return await repository.DeleteFlashcardAsync(flashcardDto.FromDeleteFlashcardDto());
+    }
 }

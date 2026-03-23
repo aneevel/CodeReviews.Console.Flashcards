@@ -3,7 +3,6 @@ using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
-using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;

@@ -92,9 +92,40 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
         }
     }
 
-    public Task HandleDeleteOperationAsync()
+    public async Task HandleDeleteOperationAsync()
     {
-        throw new NotImplementedException();
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("Please select a Flashcard to [red]Delete[/]...");
+
+        List<ReadFlashcardDto> flashcardDtos = await flashcardService.GetFlashcardsAsync();
+
+        if (flashcardDtos.Count == 0)
+        {
+            // TODO: Provide wait for key press input
+            // WaitForContinue...
+            return;
+        }
+
+        ReadFlashcardDto selectedFlashcard = AnsiConsole.Prompt(new SelectionPrompt<ReadFlashcardDto>()
+            .Title("Which Flashcard do you want to delete?")
+            .AddChoices(flashcardDtos)
+        );
+
+        char answer = AnsiConsole.Ask<char>($"You would like to [red]delete[/] [blue]{selectedFlashcard}[/]? (Y/N)");
+
+        switch (char.ToLower(answer))
+        {
+            case 'y':
+                await flashcardService.DeleteFlashcardAsync(new DeleteFlashcardDto(selectedFlashcard.Id));
+                break;
+            case 'n':
+                // TODO: Flesh out UI
+                break;
+            default:
+                // TODO: Say you don't understand - should be in an user input service
+                break;
+        }
     }
 
     public async Task HandleUpdateOperationAsync()
