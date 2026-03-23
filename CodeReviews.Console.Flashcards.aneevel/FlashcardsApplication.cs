@@ -1,3 +1,5 @@
+using CodeReviews.Console.Flashcards.aneevel.Controllers;
+using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Database;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
@@ -38,7 +40,8 @@ public sealed class FlashcardsApplication
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
                 .AddScoped<IStudyStackService, StudyStackService>()
                 .AddScoped<IFlashcardRepository, FlashcardRepository>()
-                .AddScoped<IFlashcardService, FlashcardService>();
+                .AddScoped<IFlashcardService, FlashcardService>()
+                .AddScoped<IFlashcardController, FlashcardController>();
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -55,7 +58,8 @@ public sealed class FlashcardsApplication
                 switch (option)
                 {
                     case MainMenuOptions.EnterFlashcardModule:
-                        await DisplayFlashcardOperations();
+                        await _serviceProvider.GetRequiredService<IFlashcardController>()
+                            .HandleMainMenuSelectionAsync();
                         break;
                     case MainMenuOptions.EnterStacksModule:
                         await DisplayStackOperations();
@@ -77,39 +81,6 @@ public sealed class FlashcardsApplication
         catch (Exception e)
         {
             AnsiConsole.MarkupLine("[red]An error occured:[/]" + e.Message);
-        }
-    }
-
-    private async Task DisplayFlashcardOperations()
-    {
-        AnsiConsole.Clear();
-
-        AnsiConsole.MarkupLine("Welcome to the [green]Flashcards Module[/]. Please choose the [blue]operation[/] you would like to perform.");
-
-        FlashcardMenuOptions option = AnsiConsole.Prompt(
-            new SelectionPrompt<FlashcardMenuOptions>()
-                .Title("Select an [blue]operation[/]:")
-                .AddChoices(Enum.GetValues<FlashcardMenuOptions>())
-                .UseConverter(option => option.GetDisplayName())
-        );
-
-        switch  (option)
-        {
-            case FlashcardMenuOptions.CreateAFlashcard:
-                await CreateFlashcard();
-                break;
-            case FlashcardMenuOptions.EditAFlashcard:
-                await EditFlashcard();
-                break;
-            case FlashcardMenuOptions.RemoveAFlashcard:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Deleting[/] a Flashcard");
-                break;
-            case FlashcardMenuOptions.ExitFlashcardModule:
-                AnsiConsole.Clear();
-                break;
-            default:
-                throw new InvalidOperationException("Unknown Menu Option provided!");
         }
     }
 
@@ -309,113 +280,4 @@ public sealed class FlashcardsApplication
         }
 
     }
-
-    private async Task CreateFlashcard()
-    {
-        AnsiConsole.Clear();
-
-        AnsiConsole.MarkupLine("Entering [green]Create Flashcard[/] Module...");
-
-        try
-        {
-            List<ReadStudyStackDto> studyStacks =
-                await _serviceProvider.GetRequiredService<IStudyStackService>().GetStudyStacksAsync();
-
-            if (studyStacks.Count == 0)
-            {
-                AnsiConsole.MarkupLine("There are [red]No Study Stacks found.[/] Flashcards must have an" +
-                                       " associated Study Stack. Returning to main menu.");
-                return;
-            }
-
-            // TODO: Move to input validation helper
-            ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
-                .Title("Which Stack will this Flashcard belong to?")
-                .AddChoices(studyStacks)
-            );
-
-            // TODO: Move to input validation helper
-            string newFlashcardFrontText = AnsiConsole.Ask<string>("What should the [blue]Front[/] of the Flashcard be?");
-            string newFlashcardBackText = AnsiConsole.Ask<string>("What should the [blue]Back[/] of the Flashcard be?");
-
-            await _serviceProvider.GetRequiredService<IFlashcardService>()
-                .CreateFlashcardAsync(
-                    new CreateFlashcardDto(
-                        selectedStack.Id,
-                        newFlashcardFrontText,
-                        newFlashcardBackText
-                    )
-                );
-        }
-        catch (InvalidCastException ex)
-        {
-            string errorMessage = $"""
-                                   Class: {nameof(FlashcardsApplication)}
-                                   Method: {nameof(CreateFlashcard)}
-                                   There was an error reading StudyStacks in the CreateFlashcard module: {ex.Message}
-                                   """;
-            AnsiConsole.MarkupLine(errorMessage);
-        }
-    }
-
-    private async Task EditFlashcard()
-    {
-        AnsiConsole.Clear();
-
-        AnsiConsole.MarkupLine("Please select a Flashcard to [green]Edit[/] ...");
-
-        // TODO: Should be in a try/catch
-        List<ReadFlashcardDto> flashcardDtos =
-            await _serviceProvider.GetRequiredService<IFlashcardService>().GetFlashcardsAsync();
-
-        if (flashcardDtos.Count == 0)
-        {
-            // TODO: Provide wait for key press input
-            return;
-        }
-
-        ReadFlashcardDto selectedFlashcard = AnsiConsole.Prompt(new SelectionPrompt<ReadFlashcardDto>()
-            .Title("Which Flashcard do you want to edit?")
-            .AddChoices(flashcardDtos)
-        );
-
-        char answer = AnsiConsole.Ask<char>($"You would like to [blue]edit {selectedFlashcard}[/]? (Y/N)");
-
-        switch (char.ToLower(answer))
-        {
-            case 'y':
-            {
-                List<ReadStudyStackDto> studyStacks =
-                    await _serviceProvider
-                        .GetRequiredService<IStudyStackService>()
-                        .GetStudyStacksAsync();
-
-                // TODO: will refactor ot UI
-                if (studyStacks.Count == 0)
-                {
-                    // TODO: Move to UI/validation
-                    return;
-                }
-
-                ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
-                    .Title("Which Stack should this Flashcard belong to?")
-                    .AddChoices(studyStacks)
-                );
-
-                string newFrontText = AnsiConsole.Ask<string>("What should the Flashcard front text be?");
-                string newBackText = AnsiConsole.Ask<string>("What should the Flashcard back text be?");
-                await _serviceProvider.GetRequiredService<IFlashcardService>().UpdateFlashcardAsync(
-                    new UpdateFlashcardDto(selectedStack.Id, newFrontText, newBackText, selectedFlashcard.Id));
-                break;
-            }
-            case 'n':
-                AnsiConsole.MarkupLine("Aborting edit; returning to main module.");
-                break;
-        }
-
-    }
-<<<<<<< HEAD
-    }
-=======
->>>>>>> 16cc63c ([feat]: implement module for Edit Flashcard)
 }

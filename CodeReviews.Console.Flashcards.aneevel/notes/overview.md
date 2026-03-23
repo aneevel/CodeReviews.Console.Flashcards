@@ -65,15 +65,21 @@
       - [x] Provide link to READ module
       - [ ] Provide ability to READ stacks
         - [x] Connects to DB
-        - [ ] Allows user to view list of all stacks (number in list (not DB id!), name)
+        - [ ] Allows user to view list of all flashcards in stack (number in list (not DB id!), name)
           - [x] Display raw entities
           - [x] Display from DTO
-          - [ ] Use ID as part of available stacks
+          - [ ] Use ID as part of available flashcard
           - [ ] Provide navigation/filter options
     - [ ] Enforce unique constraint at DB level
   - [x] Provide link to Study Session module
-    - [x] Provide link to CREATE module
-    - [x] Provide link to READ module
+    - [ ] Implement READ module
+      - [x] Provide link to CREATE module
+      - [ ] Connects to DB
+      - [ ] Allows user to view list of all study sessions (date, stack, score)
+        - [ ] Display raw entities
+        - [ ] Display from DTO
+        - [ ] Provide navigation/filter options
+      - [x] Provide link to READ module
   - [ ] Load DB credentials from config file
   - [ ] Utilize ConfigurationBuilder
   - [ ] Set up Logging interface
@@ -82,3 +88,7 @@
     - [ ] Test Stack Functionality
     - [ ] Test Card Functionality
     - [ ] Test Study Session Functionality
+  - [ ] Clean up UI/UX
+  - [ ] Allow optional seeding on application start 
+    - [ ] Wipe out existing data
+    - [ ] Provide static data
