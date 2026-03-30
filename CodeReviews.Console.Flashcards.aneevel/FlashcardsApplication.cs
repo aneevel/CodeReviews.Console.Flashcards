@@ -37,10 +37,13 @@ public sealed class FlashcardsApplication
                 .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
                 .AddScoped<IFlashcardRepository, FlashcardRepository>()
+                .AddScoped<IStudySessionRepository, StudySessionRepository>()
                 .AddScoped<IStudyStackService, StudyStackService>()
                 .AddScoped<IFlashcardService, FlashcardService>()
+                .AddScoped<IStudySessionService, StudySessionService>()
                 .AddScoped<IFlashcardController, FlashcardController>()
-                .AddScoped<IStudyStacksController, StudyStacksController>();
+                .AddScoped<IStudyStacksController, StudyStacksController>()
+                .AddScoped<IStudySessionsController, StudySessionsController>();
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -65,7 +68,8 @@ public sealed class FlashcardsApplication
                             .HandleMainMenuSelectionAsync();
                         break;
                     case MainMenuOptions.EnterStudySessionsModule:
-                        DisplayStudySessionOperations();
+                        await _serviceProvider.GetRequiredService<IStudySessionsController>()
+                            .HandleMainMenuSelectionAsync();
                         break;
                     case MainMenuOptions.ExitApplication:
                         return;
