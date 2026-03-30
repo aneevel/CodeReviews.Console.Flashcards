@@ -54,29 +54,40 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             List<ReadStudySessionDto> studySessionDtos =
                 await studySessionService.GetStudySessionsAsync();
 
+            if (!studySessionDtos.Any())
+            {
+                AnsiConsole.MarkupLine("There are no Study Sessions found.");
+            }
+
             // TODO: refactor to UI
 
             // TODO: Handle zero edge case
             Table table = new Table()
-                .HideHeaders()
-                .Border(TableBorder.None);
+                .DoubleBorder()
+                .BorderColor(Color.Aqua)
+                .Expand();
 
-            table.AddColumn(new TableColumn("Study Stack"));
-            table.AddColumn(new TableColumn("Date"));
-            table.AddColumn(new TableColumn("Score"));
+            table.AddColumn(new TableColumn("[yellow]Study Stack[/]"));
+            table.AddColumn(new TableColumn("[yellow]Date[/]"));
+            table.AddColumn(new TableColumn("[yellow]Score[/]"));
 
             foreach (ReadStudySessionDto studySessionDto in studySessionDtos)
             {
-                table.AddRow(studySessionDto.ReadStudyStackDto.Name,
-                    studySessionDto.Date.ToString(CultureInfo.InvariantCulture),
-                    studySessionDto.Score.ToString());
+                table.AddRow($"[green]{studySessionDto.ReadStudyStackDto.Name}[/]",
+                    $"[green]{studySessionDto.Date.ToString(CultureInfo.InvariantCulture)}[/]",
+                    $"[green]{studySessionDto.Score.ToString()}[/]");
             }
 
             AnsiConsole.Write(table);
         }
         catch (Exception ex)
         {
-            
+          string errorMessage = $"""
+                                   Class: {nameof(StudySessionsController)}
+                                   Method:  {nameof(HandleViewSessionsOperationAsync)}
+                                   There was an error accessing the HandleViewSessionsOperationAsync module: {ex.Message} {ex.StackTrace}
+                                   """;
+            AnsiConsole.MarkupLine(errorMessage);
         }
     }
 

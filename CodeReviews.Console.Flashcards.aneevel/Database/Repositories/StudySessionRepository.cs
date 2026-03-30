@@ -3,6 +3,7 @@ using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
+using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
@@ -27,7 +28,7 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
                 int studySessionScore = studySessionReader.GetInt32("Score");
                 int studyStackId = studySessionReader.GetInt32("StudyStackId");
 
-                StudyStack studyStack = await studyStackRepository.GetStudyStack(studyStackId);
+                StudyStack studyStack = await studyStackRepository.GetStudyStackAsync(studyStackId);
 
                 studySessions.Add(
                     new StudySession
@@ -35,6 +36,7 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
                         Date = studySessionDateTime,
                         Score = studySessionScore,
                         StudyStackId = studyStackId,
+                        StudyStack = studyStack
                     });
             }
 
@@ -43,7 +45,13 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
         catch (Exception ex)
         {
             // TODO: Do some real logging
-            throw new Exception("NOT IMPLEMENTED", ex);
+           string errorMessage = $"""
+                                   Class: {nameof(StudySessionRepository)}
+                                   Method:  {nameof(GetStudySessionsAsync)}
+                                   There was an error accessing the HandleViewSessionsOperationAsync module: {ex.Message} {ex.StackTrace}
+                                   """;
+            AnsiConsole.MarkupLine(errorMessage);
+            throw new Exception(errorMessage);
         }
     }
 

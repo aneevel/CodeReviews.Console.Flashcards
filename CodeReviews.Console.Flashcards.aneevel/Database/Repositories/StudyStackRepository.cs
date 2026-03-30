@@ -1,7 +1,5 @@
 using System.Data;
-using System.Diagnostics;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
-using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
@@ -10,9 +8,46 @@ namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
 internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository) : IStudyStackRepository
 {
-    public async Task<StudyStack> GetStudyStack(int Id)
+    public async Task<StudyStack?> GetStudyStackAsync(int id)
     {
-        
+        try
+        {
+            await using SqlConnection connection = new(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new("SELECT * FROM dbo.StudyStacks WHERE Id = @Id", connection);
+            command.Parameters.AddWithValue("@Id", id);
+
+            await using SqlDataReader reader = await command.ExecuteReaderAsync();
+
+            StudyStack? studyStack = null;
+            while (await reader.ReadAsync())
+            {
+                int studyStackId = reader.GetInt32("Id");
+                string studyStackName = reader.GetString("Name");
+
+                List<Flashcard> studyStackFlashcards =
+                    await flashcardRepository.GetFlashcardsFromStudyStackAsync(studyStackId);
+
+                studyStack = new StudyStack
+                {
+                    Id = studyStackId,
+                    Name = studyStackName,
+                    Flashcards = studyStackFlashcards
+                };
+
+            }
+            return studyStack;
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
+                                  $"Method: {nameof(GetStudyStacksAsync)}\n" +
+                                  $"An error occurred during an attempt to get Study Stacks from the database: {ex}";
+            // TODO: Log
+            // ? Return what??? TODO: Remove
+            throw new Exception(errorMessage, ex);
+        }
     }
     public async Task<List<StudyStack>> GetStudyStacksAsync()
     {

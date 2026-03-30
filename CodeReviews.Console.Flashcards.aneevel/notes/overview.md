@@ -29,9 +29,7 @@
         - [x] Allows user to input FRONT, BACK and STACK
         - [x] Stores Entity in DB
     - [ ] Provide link to DELETE module
-      - [ ] Handle zero case
     - [ ] Provide link to EDIT module
-      - [ ] Handle zero case
   - [ ] Implement Stack module
     - [x] Implement link to CREATE module
       - [x] Provide link to CREATE module
@@ -45,30 +43,27 @@
         - [x] Connects to DB
         - [x] Allows user to select from IDs
         - [x] Removes Entity from DB
-          - [x] Check back that this cascades to Study Sessions later
-          - [x] Check back that this cascades to Flashcards later
-        - [ ] Handle zero case
+          - [ ] Check back that this cascades to Study Sessions later
+          - [ ] Check back that this cascades to Flashcards later
     - [x] Implement EDIT module
       - [x] Provide link to EDIT module
       - [x] Provide ability to select Stack to EDIT
         - [x] Proceed to happy path
         - [x] Handle no stacks case
         - [x] Handle aborted case
-      - [ ] Implement Stack EDIT
-        - [ ] Handle zero case 
+      - [x] Implement Stack EDIT
         - [x] Can change NAME of stack
-                  - [x] Provides input prompts
-                    - [x] Input validation
-                      - [x] Handle happy path
-                      - [x] Handle sad path
-                  - [x] Save to DB
-                    - [x] Implement at Service level
-                      - [x] Use raw entity
-                      - [x] Use DTO
+            - [x] Provides input prompts
+              - [x] Input validation
+                - [x] Handle happy path
+                - [x] Handle sad path
+            - [x] Save to DB
+              - [x] Implement at Service level
+                - [x] Use raw entity
+                - [x] Use DTO
     - [ ] Implement READ module
       - [x] Provide link to READ module
       - [ ] Provide ability to READ stacks
-      - [ ] Handle zero case
         - [x] Connects to DB
         - [ ] Allows user to view list of all flashcards in stack (number in list (not DB id!), name)
           - [x] Display raw entities

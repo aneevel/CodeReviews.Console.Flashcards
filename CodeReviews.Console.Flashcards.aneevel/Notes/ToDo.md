@@ -1,0 +1,10 @@
+ - [ ] Add Logging Service
+ - [ ] Log and propagate errors properly
+   - [ ] Check out AnsiConsole exception writing
+ - [ ] Provide user input validation
+ - [ ] Provide checks at screen continues
+ - [ ] Utilize config file for DB variables
+ - [ ] Take a look at challenge section, implement reports?
+ - [ ] Add testing framework
+ - [ ] Style to taste
+   - [ ] Centralize styling
