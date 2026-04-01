@@ -40,7 +40,7 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
                 // TODO: Wait on user input and provide message
                 break;
             default:
-                throw new InvalidAsynchronousStateException("System failure; Unknown Menu Option provided.");
+                throw new InvalidOperationException("System failure; Unknown Menu Option provided.");
         }
     }
 

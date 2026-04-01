@@ -4,4 +4,5 @@ internal interface IStudySessionsController
 {
     Task HandleMainMenuSelectionAsync();
     Task HandleStartSessionOperationAsync();
+    Task HandleViewSessionsOperationAsync();
 }
