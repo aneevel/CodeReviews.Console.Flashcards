@@ -1,12 +1,15 @@
 using System.ComponentModel;
 using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
+using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers;
 
-internal class StudySessionsController : IStudySessionsController
+internal class StudySessionsController(IStudyStackService studyStackService, IStudySessionService studySessionService) : IStudySessionsController
 {
     public async Task HandleMainMenuSelectionAsync()
     {
@@ -45,6 +48,45 @@ internal class StudySessionsController : IStudySessionsController
 
     public async Task HandleStartSessionOperationAsync()
     {
-        throw new NotImplementedException();
+        AnsiConsole.Clear();
+
+        AnsiConsole.MarkupLine("Entering [green]Start Study Session[/] Module...");
+
+        try
+        {
+            List<ReadStudyStackDto> studyStackDtos =
+                await studyStackService.GetStudyStacksAsync();
+
+            // TODO: Move to input validation helper
+            if (studyStackDtos.Count == 0)
+            {
+                AnsiConsole.MarkupLine(
+                    "There are [red]No Study Stacks found.[/] There must be at least [blue]one[/] Study Stack" +
+                    " in order to have a Study Session.");
+                // TODO: Prompt user to return
+                return;
+            }
+
+            // TODO: Move to input validation helper
+            ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
+                .Title("Which Study Stack will you use for your session?")
+                .AddChoices(studyStackDtos)
+            );
+
+            AnsiConsole.MarkupLine("Beginning [green]Study Session[/]...");
+
+            int questionNumber = 1;
+            foreach (ReadFlashcardDto flashcardDto in selectedStack.Flashcards)
+            {
+                AnsiConsole.MarkupLine($"[green]Question {questionNumber}[/]");
+                AnsiConsole.MarkupLine(flashcardDto.FrontText);
+                questionNumber++;
+            }
+        }
+        // TODO: Catch what???
+        catch (InvalidCastException e)
+        {
+
+        }
     }
 }
