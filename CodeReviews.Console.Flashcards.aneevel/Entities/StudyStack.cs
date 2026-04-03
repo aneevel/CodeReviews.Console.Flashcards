@@ -11,5 +11,4 @@ internal class StudyStack
     public string? Name { get; init; }
 
     public ICollection<Flashcard>? Flashcards { get; init; }
-    // TODO: Add Study Sessions
 }

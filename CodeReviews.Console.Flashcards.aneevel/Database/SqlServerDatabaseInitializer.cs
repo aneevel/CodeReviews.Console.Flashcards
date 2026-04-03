@@ -72,25 +72,17 @@ internal sealed class SqlServerDatabaseInitializer(ConnectionString connectionSt
                                            IF OBJECT_ID('dbo.StudySessions') IS NULL CREATE TABLE dbo.StudySessions (
                                               Id INTEGER PRIMARY KEY IDENTITY(1, 1),
                                               Date DATETIME NOT NULL,
-                                              Score INTEGER NOT NULL);
+                                              Score INTEGER NOT NULL,
+                                              StudyStackId INTEGER NOT NULL
+                                              CONSTRAINT FK_StudySessions_StudyStacks FOREIGN KEY (StudyStackId)
+                                              REFERENCES dbo.StudyStacks (Id)
+                                              ON DELETE CASCADE
+                                              ON UPDATE CASCADE
+                                           );
                                            """;
 
             await using SqlCommand studySessionCommand = new SqlCommand(studySessionSql, connection);
             await studySessionCommand.ExecuteNonQueryAsync();
-
-            const string studySessionStackSql = """
-                                                IF OBJECT_ID('dbo.StudySessionStacks') IS NULL CREATE TABLE dbo.StudySessionStacks (
-                                                  Id INTEGER PRIMARY KEY IDENTITY(1, 1),
-                                                  StudyStackID INTEGER NOT NULL,
-                                                  StudySessionID INTEGER NOT NULL,
-                                                  CONSTRAINT FK_StudySessionStacks_StudySessions FOREIGN KEY (StudySessionId)
-                                                  REFERENCES dbo.StudySessions (Id),
-                                                  CONSTRAINT FK_StudySessionStacks_StudyStacks FOREIGN KEY (StudyStackId)
-                                                  REFERENCES dbo.StudyStacks (Id));
-                                                """;
-
-            await using SqlCommand studySessionStackCommand = new SqlCommand(studySessionStackSql, connection);
-            await studySessionStackCommand.ExecuteNonQueryAsync();
         }
         catch (SqlException ex)
         {

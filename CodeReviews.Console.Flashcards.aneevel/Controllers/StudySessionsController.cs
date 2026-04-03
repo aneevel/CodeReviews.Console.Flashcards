@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.StudySessionDTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
@@ -107,9 +108,11 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                     score++;
             }
 
-            AnsiConsole.MarkupLine(
-                $"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]"
-                );
+            // TODO: Utilize some helper functions for date, etc.,
+            await studySessionService.CreateStudySessionAsync(new CreateStudySessionDto(selectedStack.Id, score,
+                    DateTime.Now));
+
+            AnsiConsole.MarkupLine($"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]");
         }
         // TODO: Catch what???
         catch (InvalidCastException e)

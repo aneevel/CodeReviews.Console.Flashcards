@@ -1,17 +1,24 @@
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudySessionDTOs;
+using CodeReviews.Console.Flashcards.aneevel.Entities;
+using CodeReviews.Console.Flashcards.aneevel.Extensions.DTOs.StudySessionDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
-internal class StudySessionService : IStudySessionService
+internal class StudySessionService(IStudySessionRepository repository) : IStudySessionService
 {
-    public Task<int> CreateStudySessionAsync(CreateStudySessionDto studySessionDto)
+    public async Task<int> CreateStudySessionAsync(CreateStudySessionDto studySessionDto)
     {
-        throw new NotImplementedException();
+        return await repository.InsertStudySessionAsync(studySessionDto.FromCreateStudySessionDto());
     }
 
-    public Task<List<ReadStudySessionDto>> GetStudySessionsAsync()
+    public async Task<List<ReadStudySessionDto>> GetStudySessionsAsync()
     {
-        throw new NotImplementedException();
+        List<StudySession> studySessions = await repository.GetStudySessionsAsync();
+
+        return studySessions
+            .Select(studySession => studySession.FromStudySession())
+            .ToList();
     }
 }
