@@ -31,8 +31,8 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
         catch (Exception ex)
         {
            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
-                            $"Method: {nameof(InsertStudyStackAsync)}\n" +
-                            $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
+                            $"Method: {nameof(GetStudyStacksAsync)}\n" +
+                            $"An error occurred during an attempt to get Study Stacks from the database: {ex}";
            // TODO: Log
            // ? Return what??? TODO: Remove
             throw new Exception(errorMessage, ex);
