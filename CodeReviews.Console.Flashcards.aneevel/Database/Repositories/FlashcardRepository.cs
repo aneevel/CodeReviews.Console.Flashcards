@@ -35,8 +35,44 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
         catch (Exception ex)
         {
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
-                                  $"Method: {nameof(InsertFlashcardAsync)}\n" +
-                                  $"An error occurred during an attempt to add a new Flashcard to the database: {ex.Message}";
+                                  $"Method: {nameof(GetFlashcardsAsync)}\n" +
+                                  $"An error occurred during an attempt to get Flashcards from the database: {ex.Message}";
+            // TODO: use logger
+            // ? Return what? TODO: Should remove
+            throw new Exception(errorMessage, ex);
+        }
+    }
+    
+    public async Task<List<Flashcard>> GetFlashcardsFromStudyStackAsync(int studyStackId)
+    {
+        try
+        {
+            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await connection.OpenAsync();
+
+            await using SqlCommand command = new SqlCommand("SELECT * FROM dbo.Flashcards WHERE StudyStackId = @StudyStackId", connection);
+            command.Parameters.AddWithValue("@StudyStackId", studyStackId);
+
+            List<Flashcard> flashcards = [];
+            await using SqlDataReader reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                flashcards.Add(new Flashcard
+                {
+                    Id = reader.GetInt32("Id"),
+                    FrontText = reader.GetString("FrontText"),
+                    BackText = reader.GetString("BackText"),
+                    StudyStackId = reader.GetInt32("StudyStackId")
+                });
+            }
+
+            return flashcards;
+        }
+        catch (Exception ex)
+        {
+            string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
+                                  $"Method: {nameof(GetFlashcardsFromStudyStackAsync)}\n" +
+                                  $"An error occurred during an attempt to get Flashcards for a Study Stack from the database: {ex.Message}";
             // TODO: use logger
             // ? Return what? TODO: Should remove
             throw new Exception(errorMessage, ex);

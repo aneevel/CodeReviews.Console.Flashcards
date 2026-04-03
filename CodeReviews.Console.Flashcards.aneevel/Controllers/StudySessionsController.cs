@@ -73,6 +73,16 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                 .AddChoices(studyStackDtos)
             );
 
+            // TODO: Move to input invalidation helper
+            if (selectedStack.Flashcards.Count == 0)
+            {
+                AnsiConsole.MarkupLine(
+                    $"There are [red]No Flashcards associated with {selectedStack}. There must be at least [blue]one[/] Flashcard" +
+                    " in order to have a Study Session.");
+                // TODO: Prompt user to return
+                return;
+            }
+
             AnsiConsole.MarkupLine("Beginning [green]Study Session[/]...");
 
             int questionNumber = 1;

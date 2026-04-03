@@ -5,6 +5,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interface
 internal interface IFlashcardRepository
 {
     Task<List<Flashcard>> GetFlashcardsAsync();
+    Task<List<Flashcard>> GetFlashcardsFromStudyStackAsync(int studyStackId);
     Task<int> InsertFlashcardAsync(Flashcard flashcard);
     Task<int> UpdateFlashcardAsync(Flashcard flashcard);
     Task<int> DeleteFlashcardAsync(Flashcard flashcard);

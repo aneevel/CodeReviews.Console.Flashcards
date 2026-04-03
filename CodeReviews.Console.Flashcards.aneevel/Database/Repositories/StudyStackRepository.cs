@@ -1,29 +1,41 @@
 using System.Data;
 using System.Diagnostics;
 using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudyStackRepository(ConnectionString connectionString) : IStudyStackRepository
+internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository) : IStudyStackRepository
 {
     public async Task<List<StudyStack>> GetStudyStacksAsync()
     {
         try
         {
-            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await using SqlConnection connection = new(connectionString.Value);
             await connection.OpenAsync();
 
-            await using SqlCommand command = new SqlCommand(
+            await using SqlCommand studyStackCommand = new(
                 $"SELECT * FROM dbo.StudyStacks", connection);
 
             List<StudyStack> studyStacks = [];
-            await using SqlDataReader reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
+            await using SqlDataReader studyStackReader = await studyStackCommand.ExecuteReaderAsync();
+            while (await studyStackReader.ReadAsync())
             {
-                studyStacks.Add(new StudyStack { Name = reader.GetString("Name"), Id = reader.GetInt32("Id") });
+                int studyStackId = studyStackReader.GetInt32("Id");
+                string studyStackName = studyStackReader.GetString("Name");
+
+                List<Flashcard> studyStackFlashcards = await flashcardRepository.GetFlashcardsFromStudyStackAsync(studyStackId);
+                
+                studyStacks.Add(
+                    new StudyStack
+                    {
+                        Name = studyStackName,
+                        Id = studyStackId,
+                        Flashcards = studyStackFlashcards
+                    });
             }
 
             return studyStacks;
@@ -43,10 +55,10 @@ internal class StudyStackRepository(ConnectionString connectionString) : IStudyS
     {
         try
         {
-            await using SqlConnection connection = new SqlConnection(connectionString.Value);
+            await using SqlConnection connection = new(connectionString.Value);
             await connection.OpenAsync();
 
-            await using SqlCommand command = new SqlCommand(
+            await using SqlCommand command = new(
                 $"INSERT INTO dbo.StudyStacks (Name) VALUES (@Name)", connection);
             command.Parameters.AddWithValue("@Name", studyStack.Name);
             return await command.ExecuteNonQueryAsync();
