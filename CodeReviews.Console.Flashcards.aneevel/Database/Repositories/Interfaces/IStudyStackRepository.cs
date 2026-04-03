@@ -4,6 +4,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interface
 
 internal interface IStudyStackRepository
 {
+   Task<StudyStack> GetStudyStack(int Id);
    Task<List<StudyStack>> GetStudyStacksAsync();
    Task<int> InsertStudyStackAsync(StudyStack studyStack);
    Task<int> UpdateStudyStackAsync(StudyStack studyStack);

@@ -10,6 +10,10 @@ namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
 internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository) : IStudyStackRepository
 {
+    public async Task<StudyStack> GetStudyStack(int Id)
+    {
+        
+    }
     public async Task<List<StudyStack>> GetStudyStacksAsync()
     {
         try

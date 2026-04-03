@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudySessionDTOs;
@@ -44,7 +45,39 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
 
     public async Task HandleViewSessionsOperationAsync()
     {
-        throw new NotImplementedException();
+        AnsiConsole.Clear();
+        
+        AnsiConsole.MarkupLine("[green]Viewing[/] all Study Sessions...");
+
+        try
+        {
+            List<ReadStudySessionDto> studySessionDtos =
+                await studySessionService.GetStudySessionsAsync();
+
+            // TODO: refactor to UI
+
+            // TODO: Handle zero edge case
+            Table table = new Table()
+                .HideHeaders()
+                .Border(TableBorder.None);
+
+            table.AddColumn(new TableColumn("Study Stack"));
+            table.AddColumn(new TableColumn("Date"));
+            table.AddColumn(new TableColumn("Score"));
+
+            foreach (ReadStudySessionDto studySessionDto in studySessionDtos)
+            {
+                table.AddRow(studySessionDto.ReadStudyStackDto.Name,
+                    studySessionDto.Date.ToString(CultureInfo.InvariantCulture),
+                    studySessionDto.Score.ToString());
+            }
+
+            AnsiConsole.Write(table);
+        }
+        catch (Exception ex)
+        {
+            
+        }
     }
 
     public async Task HandleStartSessionOperationAsync()
