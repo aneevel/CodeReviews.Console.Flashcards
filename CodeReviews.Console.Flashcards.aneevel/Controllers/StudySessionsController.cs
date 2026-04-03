@@ -85,13 +85,31 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
 
             AnsiConsole.MarkupLine("Beginning [green]Study Session[/]...");
 
-            int questionNumber = 1;
+            int questionNumber = 0;
+            int score = 0;
             foreach (ReadFlashcardDto flashcardDto in selectedStack.Flashcards)
             {
-                AnsiConsole.MarkupLine($"[green]Question {questionNumber}[/]");
-                AnsiConsole.MarkupLine(flashcardDto.FrontText);
                 questionNumber++;
+                AnsiConsole.MarkupLine($"[green]Question {questionNumber}[/]");
+                AnsiConsole.MarkupLine(flashcardDto.FrontText!);
+
+                AnsiConsole.Ask<char>("Press enter to see the answer.");
+                
+                AnsiConsole.MarkupLine($"[green]Answer[/]");
+                AnsiConsole.MarkupLine(flashcardDto.BackText!);
+
+                char response = AnsiConsole.Prompt<char>(new SelectionPrompt<char>()
+                    .Title("Did you get the answer correct?")
+                    .AddChoices(['Y', 'N'])
+                );
+
+                if (response == 'Y')
+                    score++;
             }
+
+            AnsiConsole.MarkupLine(
+                $"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]"
+                );
         }
         // TODO: Catch what???
         catch (InvalidCastException e)

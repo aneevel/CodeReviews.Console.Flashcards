@@ -17,7 +17,7 @@ internal static class ToDto
                 readFlashcardDtos.AddRange(studyStack.Flashcards.Select(flashcard => new ReadFlashcardDto(flashcard.Id, flashcard.FrontText, flashcard.BackText)));
             }
             
-            return new ReadStudyStackDto(studyStack.Name, studyStack.Id, readFlashcardDtos);
+            return new ReadStudyStackDto(studyStack.Name!, studyStack.Id, readFlashcardDtos);
         }
     }
 }
