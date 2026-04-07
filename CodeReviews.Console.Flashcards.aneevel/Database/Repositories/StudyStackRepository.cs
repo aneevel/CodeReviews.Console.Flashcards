@@ -3,19 +3,19 @@ using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository) : IStudyStackRepository
+internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository, ILogger<StudyStackRepository> logger) : IStudyStackRepository
 {
     public async Task<StudyStack?> GetStudyStackAsync(int id)
     {
         try
         {
-            await using SqlConnection connection = new(connectionString.Value);
-            await connection.OpenAsync();
+            await using SqlConnection connection = new(connectionString.Value); await connection.OpenAsync();
 
-            await using SqlCommand command = new("SELECT * FROM dbo.StudyStacks WHERE Id = @Id", connection);
+            await using SqlCommand command = new("SELECT * FROM dbo.StuyStacks WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Id", id);
 
             await using SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -42,11 +42,10 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
         catch (Exception ex)
         {
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
-                                  $"Method: {nameof(GetStudyStacksAsync)}\n" +
-                                  $"An error occurred during an attempt to get Study Stacks from the database: {ex}";
-            // TODO: Log
-            // ? Return what??? TODO: Remove
-            throw new Exception(errorMessage, ex);
+                                  $"Method: {nameof(GetStudyStackAsync)}\n" +
+                                  $"An error occurred during an attempt to get a Study Stack with id {id} from the database: {ex.Message}";
+            logger.LogError(errorMessage);
+            return null;
         }
     }
     public async Task<List<StudyStack>> GetStudyStacksAsync()
@@ -57,7 +56,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand studyStackCommand = new(
-                $"SELECT * FROM dbo.StudyStacks", connection);
+                $"SELECT * FROM dbo.StudySacks", connection);
 
             List<StudyStack> studyStacks = [];
             await using SqlDataReader studyStackReader = await studyStackCommand.ExecuteReaderAsync();
@@ -83,10 +82,9 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
         {
            string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                             $"Method: {nameof(GetStudyStacksAsync)}\n" +
-                            $"An error occurred during an attempt to get Study Stacks from the database: {ex}";
-           // TODO: Log
-           // ? Return what??? TODO: Remove
-            throw new Exception(errorMessage, ex);
+                            $"An error occurred during an attempt to get Study Stacks from the database: {ex.Message}";
+           logger.LogError(errorMessage);
+           return [];
         }
     }
 
@@ -98,7 +96,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new(
-                $"INSERT INTO dbo.StudyStacks (Name) VALUES (@Name)", connection);
+                $"INSERT INTO dbo.StdyStacks (Name) VALUES (@Name)", connection);
             command.Parameters.AddWithValue("@Name", studyStack.Name);
             return await command.ExecuteNonQueryAsync();
         }
@@ -107,7 +105,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                             $"Method: {nameof(InsertStudyStackAsync)}\n" +
                             $"An error occurred during an attempt to add a Study Stack to the database: {ex.Message}";
-            // TODO: Should be error logger
+            logger.LogError(errorMessage);
             return -1;
         }
 
@@ -121,7 +119,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
-                $"UPDATE dbo.StudyStacks SET Name = @Name WHERE Id = @Id", connection);
+                $"UPDATE dbo.StudyStcks SET Name = @Name WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Name", studyStack.Name);
             command.Parameters.AddWithValue("@Id", studyStack.Id);
             return await command.ExecuteNonQueryAsync();
@@ -131,7 +129,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                                   $"Method: {nameof(UpdateStudyStackAsync)}\n" +
                                   $"An error occurred during an attempt to update a Study Stack to the database: {ex.Message}";
-            // TODO: Log
+            logger.LogError(errorMessage);
             return -1;
         }
     }
@@ -144,7 +142,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
-                $"DELETE FROM dbo.StudyStacks WHERE Id = @Id", connection);
+                $"DELETE FROM dbo.StudyStcks WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Id", studyStack.Id);
             return await command.ExecuteNonQueryAsync();
         }
@@ -153,7 +151,8 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             string errorMessage = $"\nClass: {nameof(StudyStackRepository)}\n" +
                                   $"Method: {nameof(DeleteStudyStackAsync)}\n" +
                                   $"An error occurred during an attempt to delete a Study Stack from the database: {ex.Message}";
-            throw new Exception(errorMessage, ex);
+            logger.LogError(errorMessage);
+            return -1;
         }
     }
 }

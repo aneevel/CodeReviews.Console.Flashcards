@@ -1,4 +1,6 @@
  - [ ] Add Logging Service
+   - [ ] Set up default logger (prints expected diagnostic information)
+   - [ ] Set up error logger (logs exceptions)
  - [ ] Log and propagate errors properly
    - [ ] Check out AnsiConsole exception writing
  - [ ] Provide user input validation

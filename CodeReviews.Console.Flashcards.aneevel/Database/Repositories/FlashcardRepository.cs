@@ -3,10 +3,12 @@ using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class FlashcardRepository(ConnectionString connectionString) : IFlashcardRepository
+internal class FlashcardRepository(ConnectionString connectionString, ILogger<FlashcardRepository> logger) : IFlashcardRepository
 {
     public async Task<List<Flashcard>> GetFlashcardsAsync()
     {
@@ -37,9 +39,8 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
                                   $"Method: {nameof(GetFlashcardsAsync)}\n" +
                                   $"An error occurred during an attempt to get Flashcards from the database: {ex.Message}";
-            // TODO: use logger
-            // ? Return what? TODO: Should remove
-            throw new Exception(errorMessage, ex);
+            logger.LogError(errorMessage);
+            return [];
         }
     }
     
@@ -73,9 +74,8 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
                                   $"Method: {nameof(GetFlashcardsFromStudyStackAsync)}\n" +
                                   $"An error occurred during an attempt to get Flashcards for a Study Stack from the database: {ex.Message}";
-            // TODO: use logger
-            // ? Return what? TODO: Should remove
-            throw new Exception(errorMessage, ex);
+            logger.LogError(errorMessage);
+            return [];
         }
     }
 
@@ -99,7 +99,7 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
                                   $"Method: {nameof(InsertFlashcardAsync)}\n" +
                                   $"An error occurred during an attempt to add a Flashcard to the database: {ex.Message}";
-            // TODO: Add logger
+            logger.LogError(errorMessage);
             return -1;
         }
     }
@@ -126,7 +126,7 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
                                   $"Method: {nameof(InsertFlashcardAsync)}\n" +
                                   $"An error occurred during an attempt to edit a flashcard in the database: {ex.Message}";
-            // TODO: Log this
+            logger.LogError(errorMessage);
             return -1;
         }
     }
@@ -148,7 +148,7 @@ internal class FlashcardRepository(ConnectionString connectionString) : IFlashca
             string errorMessage = $"\nClass: {nameof(FlashcardRepository)}\n" +
                                   $"Method: {nameof(DeleteFlashcardAsync)}\n" +
                                   $"An error occurred during an attempt to delete a flashcard in the database: {ex.Message}";
-            // TODO: Log this
+            logger.LogError(errorMessage);
             return -1;
         }
     }

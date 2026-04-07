@@ -8,9 +8,12 @@ using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Services;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
+using Serilog;
+// ReSharper disable All
 
 namespace CodeReviews.Console.Flashcards.aneevel;
 
@@ -21,19 +24,37 @@ public sealed class FlashcardsApplication
     {
         try
         {
+            IConfigurationBuilder configBuilder =
+                new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+            IConfigurationRoot configuration = configBuilder.Build();
+
+            DatabaseSettings? databaseSettings =
+                configuration.GetRequiredSection("DatabaseSettings").Get<DatabaseSettings>();
+
+            // TODO: Catch when application does not have settings file
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
             {
-                DataSource = "localhost",
-                UserID = "sa", Password = "password1@",
-                InitialCatalog = "master",
-                TrustServerCertificate = true
+                DataSource = databaseSettings?.DataSource,
+                UserID = databaseSettings?.UserId,
+                Password = databaseSettings?.Password,
+                InitialCatalog = databaseSettings?.InitialCatalog,
+                TrustServerCertificate = databaseSettings!.TrustServerCertificate || false
             };
 
             ConnectionString connectionString = new ConnectionString(builder.ConnectionString);
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Logger(logger => logger
+                    .MinimumLevel.Error()
+                    .WriteTo.File("logs/error.txt", rollingInterval: RollingInterval.Day)
+                    )
+                .CreateLogger();
+
             // TODO: this should all be top level
             IServiceCollection services = new ServiceCollection()
                 .AddSingleton(connectionString)
+                .AddSingleton<IConfigurationRoot>(configuration)
                 .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
                 .AddScoped<IFlashcardRepository, FlashcardRepository>()
@@ -43,7 +64,8 @@ public sealed class FlashcardsApplication
                 .AddScoped<IStudySessionService, StudySessionService>()
                 .AddScoped<IFlashcardController, FlashcardController>()
                 .AddScoped<IStudyStacksController, StudyStacksController>()
-                .AddScoped<IStudySessionsController, StudySessionsController>();
+                .AddScoped<IStudySessionsController, StudySessionsController>()
+                .AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
             _serviceProvider = services.BuildServiceProvider();
 
@@ -78,44 +100,15 @@ public sealed class FlashcardsApplication
                 }
             }
         }
-        catch (SqlException ex)
+        catch (FileNotFoundException ex)
         {
-            AnsiConsole.MarkupLine("[red]An error occured:[/]" + ex.Message);
+            Log.Logger.Fatal(ex, "appsettings.json was not found; FlashcardsApplication requires a valid appsettings.json file.");
+            Environment.Exit(1);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            AnsiConsole.MarkupLine("[red]An error occured:[/]" + e.Message);
-        }
-    }
-
-    private void DisplayStudySessionOperations()
-    {
-        AnsiConsole.Clear();
-
-        AnsiConsole.MarkupLine("Welcome to the [green]Study Sessions Module[/]! Please choose an [blue] operation[/] you would like to perform.");
-
-        StudySessionMenuOptions option = AnsiConsole.Prompt(
-            new SelectionPrompt<StudySessionMenuOptions>()
-                .Title("Select an [blue]operation[/]:")
-                .AddChoices(Enum.GetValues<StudySessionMenuOptions>())
-        );
-
-        switch (option)
-        {
-            case StudySessionMenuOptions.ViewAllStudySessions:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Viewing[/] all Sessions");
-                break;
-            case StudySessionMenuOptions.StartAStudySession:
-                AnsiConsole.Clear();
-                AnsiConsole.MarkupLine("[green]Starting[/] a new Session");
-                break;
-            case StudySessionMenuOptions.ExitStudySessionModule:
-                AnsiConsole.Clear();
-                return;
-            default:
-                throw new InvalidOperationException("Unknown Menu Option provided!");
-
+            Log.Logger.Fatal(ex, "An unknown error occurred!");
+            Environment.Exit(1);
         }
     }
 }

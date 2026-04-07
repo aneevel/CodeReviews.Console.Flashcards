@@ -5,6 +5,7 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
+using Serilog;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers;
@@ -50,11 +51,10 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
 
         AnsiConsole.MarkupLine("Entering [green]Create Flashcard[/] Module...");
 
-        try
-        {
             List<ReadStudyStackDto> studyStacks =
                 await studyStackService.GetStudyStacksAsync();
 
+            // TODO: Respond appropriately to user in legible way
             if (studyStacks.Count == 0)
             {
                 AnsiConsole.MarkupLine("There are [red]No Study Stacks found.[/] Flashcards must have an" +
@@ -72,24 +72,17 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
             string newFlashcardFrontText = AnsiConsole.Ask<string>("What should the [blue]Front[/] of the Flashcard be?");
             string newFlashcardBackText = AnsiConsole.Ask<string>("What should the [blue]Back[/] of the Flashcard be?");
 
-            await flashcardService
-                .CreateFlashcardAsync(
-                    new CreateFlashcardDto(
-                        selectedStack.Id,
-                        newFlashcardFrontText,
-                        newFlashcardBackText
-                    )
-                );
-        }
-        catch (InvalidCastException ex)
-        {
-            string errorMessage = $"""
-                                   Class: {nameof(FlashcardController)}
-                                   Method: {nameof(HandleCreateOperationAsync)}
-                                   There was an error reading StudyStacks in the HandleCreateOperationAsync module: {ex.Message}
-                                   """;
-            AnsiConsole.MarkupLine(errorMessage);
-        }
+            if (await flashcardService
+                    .CreateFlashcardAsync(
+                        new CreateFlashcardDto(
+                            selectedStack.Id,
+                            newFlashcardFrontText,
+                            newFlashcardBackText
+                        )
+                    ) == -1)
+            {
+                AnsiConsole.MarkupLine("[red]System error;[/] unable to create new Flashcard!");
+            }
     }
 
     public async Task HandleDeleteOperationAsync()
@@ -134,9 +127,6 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
 
         AnsiConsole.MarkupLine("Please select a Flashcard to [green]Edit[/] ...");
 
-        // TODO: Should be in a try/catch
-        try
-        {
             List<ReadFlashcardDto> flashcardDtos =
                 await flashcardService.GetFlashcardsAsync();
 
@@ -183,10 +173,5 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
                     AnsiConsole.MarkupLine("Aborting edit; returning to main module.");
                     break;
             }
-        }
-        // TODO: What should this catch?
-        catch
-        {
-        }
     }
 }

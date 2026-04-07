@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Globalization;
 using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
@@ -49,8 +48,6 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
         
         AnsiConsole.MarkupLine("[green]Viewing[/] all Study Sessions...");
 
-        try
-        {
             List<ReadStudySessionDto> studySessionDtos =
                 await studySessionService.GetStudySessionsAsync();
 
@@ -79,16 +76,6 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             }
 
             AnsiConsole.Write(table);
-        }
-        catch (Exception ex)
-        {
-          string errorMessage = $"""
-                                   Class: {nameof(StudySessionsController)}
-                                   Method:  {nameof(HandleViewSessionsOperationAsync)}
-                                   There was an error accessing the HandleViewSessionsOperationAsync module: {ex.Message} {ex.StackTrace}
-                                   """;
-            AnsiConsole.MarkupLine(errorMessage);
-        }
     }
 
     public async Task HandleStartSessionOperationAsync()
@@ -97,13 +84,11 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
 
         AnsiConsole.MarkupLine("Entering [green]Start Study Session[/] Module...");
 
-        try
-        {
             List<ReadStudyStackDto> studyStackDtos =
                 await studyStackService.GetStudyStacksAsync();
 
             // TODO: Move to input validation helper
-            if (studyStackDtos.Count == 0)
+            if (!studyStackDtos.Any() )
             {
                 AnsiConsole.MarkupLine(
                     "There are [red]No Study Stacks found.[/] There must be at least [blue]one[/] Study Stack" +
@@ -119,7 +104,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             );
 
             // TODO: Move to input invalidation helper
-            if (selectedStack.Flashcards.Count == 0)
+            if (!selectedStack.Flashcards.Any())
             {
                 AnsiConsole.MarkupLine(
                     $"There are [red]No Flashcards associated with {selectedStack}. There must be at least [blue]one[/] Flashcard" +
@@ -136,12 +121,12 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             {
                 questionNumber++;
                 AnsiConsole.MarkupLine($"[green]Question {questionNumber}[/]");
-                AnsiConsole.MarkupLine(flashcardDto.FrontText!);
+                AnsiConsole.MarkupLine(flashcardDto.FrontText);
 
                 AnsiConsole.Ask<char>("Press enter to see the answer.");
                 
                 AnsiConsole.MarkupLine($"[green]Answer[/]");
-                AnsiConsole.MarkupLine(flashcardDto.BackText!);
+                AnsiConsole.MarkupLine(flashcardDto.BackText);
 
                 char response = AnsiConsole.Prompt<char>(new SelectionPrompt<char>()
                     .Title("Did you get the answer correct?")
@@ -152,16 +137,13 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                     score++;
             }
 
-            // TODO: Utilize some helper functions for date, etc.,
-            await studySessionService.CreateStudySessionAsync(new CreateStudySessionDto(selectedStack.Id, score,
-                    DateTime.Now));
+            if (await studySessionService.CreateStudySessionAsync(new CreateStudySessionDto(selectedStack.Id, score,
+                    DateTime.Now)) == -1)
+            {
+                AnsiConsole.MarkupLine("[red]Error; there was a problem creating the study session![/]");
+                return;
+            }
 
             AnsiConsole.MarkupLine($"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]");
-        }
-        // TODO: Catch what???
-        catch (InvalidCastException e)
-        {
-
-        }
     }
 }

@@ -49,13 +49,14 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
     {
         AnsiConsole.Clear();
 
-        AnsiConsole.MarkupLine("[green]Creating[/] a new Stack...");
+        AnsiConsole.MarkupLine("[green]Creating[/] a new Study Stack...");
 
         string stackName = AnsiConsole.Ask<string>("What should the [green]name[/] of this stack be?");
 
         CreateStudyStackDto stack = new CreateStudyStackDto(stackName);
 
-        await service.CreateStudyStackAsync(stack);
+        if (await service.CreateStudyStackAsync(stack) == -1)
+            AnsiConsole.MarkupLine("[red]Unable to create Study Stack![/]");
     }
 
     public async Task HandleReadOperationAsync()
@@ -64,10 +65,13 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
 
         AnsiConsole.MarkupLine("[green]Viewing[/] all Stacks...");
 
-        try
-        {
             List<ReadStudyStackDto> studyStacks =
                 await service.GetStudyStacksAsync();
+
+            if (!studyStacks.Any())
+            {
+                AnsiConsole.MarkupLine("[red]No Study Stacks to read[/]");
+            }
 
             // TODO: Will refactor to UI
 
@@ -80,7 +84,7 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
 
             foreach (ReadStudyStackDto studyStack in studyStacks)
             {
-                table.AddRow(studyStack.Name ?? string.Empty);
+                table.AddRow(studyStack.Name);
             }
 
             Panel panel = new Panel(table)
@@ -90,16 +94,6 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
                 .Expand();
 
             AnsiConsole.Write(panel);
-        }
-        catch (InvalidOperationException ex)
-        {
-            string errorMessage = $"""
-                                   Class: {nameof(StudyStacksController)}
-                                   Method:  {nameof(HandleReadOperationAsync)}
-                                   There was an error accessing the HandleReadOperationAsync module: {ex.Message}
-                                   """;
-            AnsiConsole.MarkupLine(errorMessage);
-        }
     }
 
     public async Task HandleUpdateOperationAsync()
@@ -108,11 +102,9 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
 
         AnsiConsole.MarkupLine("Please select a Stack to [green]Edit[/]...");
 
-        try
-        {
             List<ReadStudyStackDto> studyStacks = await service.GetStudyStacksAsync();
 
-            if (studyStacks.Count == 0)
+            if (!studyStacks.Any())
             {
                 // TODO: Provide wait for key press input
                 // WaitForContinue...
@@ -132,19 +124,17 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
                 {
                     // TODO: Move to edit
                     string newStackName = AnsiConsole.Ask<string>("What should the new name of the stack be?");
-                    await service.UpdateStudyStackAsync(
-                        new UpdateStudyStackDto(newStackName, selectedStack.Id));
+                    if (await service.UpdateStudyStackAsync(
+                            new UpdateStudyStackDto(newStackName, selectedStack.Id)) == -1)
+                    {
+                        AnsiConsole.MarkupLine("[red]Unable to edit Study Stack![/] Study Stack will remain as it was.");
+                    }
                     break;
                 }
                 case 'n':
                     AnsiConsole.MarkupLine("Aborting edit; returning to main menu.");
                     break;
             }
-        }
-        // TODO: What to catch?
-        catch
-        {
-        }
     }
 
     public async Task HandleDeleteOperationAsync()
@@ -153,11 +143,9 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
 
         AnsiConsole.MarkupLine("Please select a Stack to [red]Delete[/]...");
 
-        try
-        {
             List<ReadStudyStackDto> studyStacks = await service.GetStudyStacksAsync();
 
-            if (studyStacks.Count == 0)
+            if (!studyStacks.Any())
             {
                 // TODO: Provide wait for key press input
                 // WaitForContinue...
@@ -176,14 +164,15 @@ internal class StudyStacksController(IStudyStackService service) : IStudyStacksC
                 case 'y':
                 {
                     // TODO: Move to UI
-                    await service.DeleteStudyStackAsync(new DeleteStudyStackDto(selectedStack.Id));
+                    if (await service.DeleteStudyStackAsync(new DeleteStudyStackDto(selectedStack.Id)) == -1)
+                        AnsiConsole.MarkupLine("[red]Unable to delete study stack![/] Study stack will remain.");
+                    break;
+                }
+                case 'n':
+                {
+                    AnsiConsole.MarkupLine("Aborting delete; returning to main menu.");
                     break;
                 }
             }
-        }
-        // TODO: Catch what?
-        catch
-        {
-        }
     }
 }

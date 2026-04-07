@@ -3,11 +3,12 @@ using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudySessionRepository(ConnectionString connectionString, IStudyStackRepository studyStackRepository) : IStudySessionRepository
+internal class StudySessionRepository(ConnectionString connectionString, IStudyStackRepository studyStackRepository, ILogger<StudySessionRepository> logger) : IStudySessionRepository
 {
     public async Task<List<StudySession>> GetStudySessionsAsync()
     {
@@ -23,12 +24,11 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
             await using SqlDataReader studySessionReader = await studySessionsCommand.ExecuteReaderAsync();
             while (await studySessionReader.ReadAsync())
             {
-                int studySessionId = studySessionReader.GetInt32("Id");
                 DateTime studySessionDateTime = studySessionReader.GetDateTime("Date");
                 int studySessionScore = studySessionReader.GetInt32("Score");
                 int studyStackId = studySessionReader.GetInt32("StudyStackId");
 
-                StudyStack studyStack = await studyStackRepository.GetStudyStackAsync(studyStackId);
+                StudyStack? studyStack = await studyStackRepository.GetStudyStackAsync(studyStackId);
 
                 studySessions.Add(
                     new StudySession
@@ -44,14 +44,13 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
         }
         catch (Exception ex)
         {
-            // TODO: Do some real logging
            string errorMessage = $"""
                                    Class: {nameof(StudySessionRepository)}
                                    Method:  {nameof(GetStudySessionsAsync)}
-                                   There was an error accessing the HandleViewSessionsOperationAsync module: {ex.Message} {ex.StackTrace}
+                                   An error occurred trying to retrieve study sessions from the database: {ex.Message}
                                    """;
-            AnsiConsole.MarkupLine(errorMessage);
-            throw new Exception(errorMessage);
+            logger.LogError(errorMessage);
+            return [];
         }
     }
 
@@ -73,8 +72,13 @@ internal class StudySessionRepository(ConnectionString connectionString, IStudyS
         catch
             (Exception ex)
         {
-            // TODO: Should be error logger
-            return -1;
+           string errorMessage = $"""
+                                   Class: {nameof(StudySessionRepository)}
+                                   Method:  {nameof(InsertStudySessionAsync)}
+                                   An error occurred during an attempt to insert a study session into the database: {ex.Message}
+                                   """;
+           logger.LogError(errorMessage);
+           return -1;
         }
     }
 }

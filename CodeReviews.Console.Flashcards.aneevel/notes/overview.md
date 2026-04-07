@@ -1,9 +1,6 @@
 ## General Notes:
     - Use DTOs
         - [ ] Document basic use case/usage
-    - Use Contexts
-        - [ ] Document use of "Navigation Properties"
-        - [ ] Document basic use case/usage
     - Use SQL Server
     - Try out Repository Pattern
         - [ ] Document basic use case/usage
@@ -21,30 +18,30 @@
 - [ ] Create FlashCard Application class
   - [x] Provide initial prompt
   - [x] Loop until quit is selected
-  - [ ] Implement Flashcard module
+  - [x] Implement Flashcard module
     - [x] Implement CREATE module
       - [x] Provide link to CREATE module
       - [x] Provide ability to CREATE flashcard
         - [x] Connects to DB
         - [x] Allows user to input FRONT, BACK and STACK
         - [x] Stores Entity in DB
-    - [ ] Provide link to DELETE module
-    - [ ] Provide link to EDIT module
-  - [ ] Implement Stack module
+    - [x] Provide link to DELETE module
+    - [x] Provide link to EDIT module
+  - [x] Implement Stack module
     - [x] Implement link to CREATE module
       - [x] Provide link to CREATE module
       - [x] Provide ability to CREATE stack
         - [x] Connects to DB
         - [x] Allows user to input NAME
         - [x] Stores Entity in DB
-    - [ ] Implement DELETE module
+    - [x] Implement DELETE module
       - [x] Provide link to DELETE module
-      - [ ] Provide ability to DELETE stack
+      - [x] Provide ability to DELETE stack
         - [x] Connects to DB
         - [x] Allows user to select from IDs
         - [x] Removes Entity from DB
-          - [ ] Check back that this cascades to Study Sessions later
-          - [ ] Check back that this cascades to Flashcards later
+          - [x] Check back that this cascades to Study Sessions later
+          - [x] Check back that this cascades to Flashcards later
     - [x] Implement EDIT module
       - [x] Provide link to EDIT module
       - [x] Provide ability to select Stack to EDIT
@@ -61,34 +58,42 @@
               - [x] Implement at Service level
                 - [x] Use raw entity
                 - [x] Use DTO
-    - [ ] Implement READ module
+    - [x] Implement READ module
       - [x] Provide link to READ module
-      - [ ] Provide ability to READ stacks
+      - [x] Provide ability to READ stacks
         - [x] Connects to DB
-        - [ ] Allows user to view list of all flashcards in stack (number in list (not DB id!), name)
-          - [x] Display raw entities
-          - [x] Display from DTO
-          - [ ] Use ID as part of available flashcard
-          - [ ] Provide navigation/filter options
-    - [ ] Enforce unique constraint at DB level
+    - [x] Enforce unique constraint at DB level
   - [x] Provide link to Study Session module
-    - [ ] Implement READ module
+    - [x] Implement READ module
       - [x] Provide link to CREATE module
-      - [ ] Connects to DB
-      - [ ] Allows user to view list of all study sessions (date, stack, score)
-        - [ ] Display raw entities
-        - [ ] Display from DTO
-        - [ ] Provide navigation/filter options
+      - [x] Connects to DB
+      - [x] Allows user to view list of all study sessions (date, stack, score)
+        - [x] Display raw entities
+        - [x] Display from DTO
       - [x] Provide link to READ module
-  - [ ] Load DB credentials from config file
-  - [ ] Utilize ConfigurationBuilder
-  - [ ] Set up Logging interface
+  - [x] Load DB credentials from config file
+  - [x] Utilize ConfigurationBuilder
+  - [x] Set up Logging interface
+    - [x] Initialize Serilog setup
+    - [x] Add logging to all top level files
+      - [x] FlashcardController
+        - [x] Error log
+          - [x] Implement
+          - [x] Test
+      - [x] StudySessionController
+        - [x] Error log
+          - [x] Implement
+          - [x] Test
+      - [x] StudyStackController
+        - [x] Error log
+          - [x] Implement
+          - [x] Test
   - [x] Use DI for services/repos
   - [ ] Testing!
     - [ ] Test Stack Functionality
     - [ ] Test Card Functionality
     - [ ] Test Study Session Functionality
   - [ ] Clean up UI/UX
-  - [ ] Allow optional seeding on application start 
-    - [ ] Wipe out existing data
-    - [ ] Provide static data
+    - [ ] Create User Input Class
+      - [ ] Create validator (if necessary)
+      - [ ] Start by sketching out interface in controller classes
