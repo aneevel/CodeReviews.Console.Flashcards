@@ -1,6 +1,9 @@
 ## Design Decisions
 
 - I thought a lot about what a general solution for error/exception handling should look like; I weighed a couple of options, including a global exception/error handler, but ultimately decided to log errors at the repository level and return a status code (either -1 or an empty/null value depending on case) because I didn't want to couple the reaction to an error occurring. The service should have no say in how the controller responds to an error, but it is relevant to it's purpose at a system level and thus it should inform the system of an error but leave the response to the controller.
+- Due to the design of my UI as sequential steps, the easiest UI/UX choice to address backing out of actions was simply to return to the main module. In the future, I think I would like to maintain of Stack of UI States so that I can simply pop the last one off to transition to a previous state. 
+- I could have made UserInput an interface, and then inherited from that to utilize Spectre Console. This would be necessary if I were testing the controller methods, but I decided not to since they are just wrappers around the core service logic. Thus, there is one concrete implementation relying on Spectre.
+- Probably the most interesting decision for me was to forego the use of a many-to-many table between StudyStacks and Study Sessions. This is how I would represent this relationship when drawing out the ERD. However, I decided to forego it here because the entity relationships are simple and I only had to write a touch more SQL to get associated entities. My understanding is that EF has a simple solution for these relationships, so I'm interested to see what's in store there.
 
 ## Out of Scope
 
@@ -9,4 +12,3 @@ There were a few things I consciously acknowledged as out of scope for this proj
 - The "Options" pattern is something I will be using in the future. I understand conceptually that this is the industry standard way to bind configuration settings to type-safe classes at runtime. For now, I did utilize a "DatabaseSettings" class to provide some type safety, but notably it does not have fallback options. An improperly set up appsettings.json file will cause problems with this application that it is not equipped to handle.
 - More log sinks. I considered the addition of some sort of "access" or "information" sink as well as utilizing a Spectre sink, which would be great in a true production environment to see when successful actions took place. I didn't see much benefit in doing it at this time because it's conceptually not any different than the error logging, but it would be a fantastic idea in a real application.
 - Use of Entity Framework; I understand this will be a requirement in future projects, so I held off for now. My raw SQL skills are already good from my professional work, and I'm familiar with utilizing ORMs in CakePHP, so I think this will be an easy transition in future projects.
-- 

@@ -55,6 +55,7 @@ public sealed class FlashcardsApplication
             IServiceCollection services = new ServiceCollection()
                 .AddSingleton(connectionString)
                 .AddSingleton<IConfigurationRoot>(configuration)
+                .AddSingleton<UserInput>()
                 .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
                 .AddScoped<IStudyStackRepository, StudyStackRepository>()
                 .AddScoped<IFlashcardRepository, FlashcardRepository>()

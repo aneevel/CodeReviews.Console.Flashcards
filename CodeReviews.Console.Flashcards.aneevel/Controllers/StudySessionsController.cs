@@ -6,24 +6,19 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
 using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers;
 
-internal class StudySessionsController(IStudyStackService studyStackService, IStudySessionService studySessionService) : IStudySessionsController
+internal class StudySessionsController(IStudyStackService studyStackService, IStudySessionService studySessionService, UserInput userInput) : IStudySessionsController
 {
     public async Task HandleMainMenuSelectionAsync()
     {
-        AnsiConsole.Clear();
+        userInput.WelcomeToModule("Welcome to the [green]Study Sessions Module[/]. Please choose the [blue]operation[/] you would like to perform.");
 
-        AnsiConsole.MarkupLine("Welcome to the [green]Study Sessions Module[/]. Please choose the [blue]operation[/] you would like to perform.");
-
-        StudySessionMenuOptions option = AnsiConsole.Prompt(
-            new SelectionPrompt<StudySessionMenuOptions>()
-                .Title("Select an [blue]operation[/]:")
-                .AddChoices(Enum.GetValues<StudySessionMenuOptions>())
-                .UseConverter(option => option.GetDisplayName())
-        );
+        StudySessionMenuOptions option =
+            userInput.GetUserChoice<StudySessionMenuOptions>("Select an [blue]operation[/]:", Enum.GetValues<StudySessionMenuOptions>(), option => option.GetDisplayName());
 
         switch (option)
         {
@@ -34,8 +29,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                 await HandleViewSessionsOperationAsync();
                 break;
             case StudySessionMenuOptions.ExitStudySessionModule:
-                AnsiConsole.Clear();
-                // TODO: Wait on user input and provide message
+                userInput.WaitForContinue("Exiting to main menu. Press any key to continue...");
                 break;
             default:
                 throw new InvalidOperationException("System failure; Unknown Menu Option provided.");
@@ -44,21 +38,20 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
 
     public async Task HandleViewSessionsOperationAsync()
     {
-        AnsiConsole.Clear();
-        
-        AnsiConsole.MarkupLine("[green]Viewing[/] all Study Sessions...");
+        userInput.WelcomeToModule("[green]Viewing[/] all Study Sessions...");
 
             List<ReadStudySessionDto> studySessionDtos =
                 await studySessionService.GetStudySessionsAsync();
 
             if (!studySessionDtos.Any())
             {
-                AnsiConsole.MarkupLine("There are no Study Sessions found.");
+                userInput.WaitForContinue(
+                    "There are [red]No Study Sessions found.[/] Please create some Study Sessions " +
+                    " in order to view them. Press any key to continue...");
+                return;
             }
 
-            // TODO: refactor to UI
-
-            // TODO: Handle zero edge case
+            // TODO: Refactor to dedicated builder class
             Table table = new Table()
                 .DoubleBorder()
                 .BorderColor(Color.Aqua)
@@ -80,9 +73,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
 
     public async Task HandleStartSessionOperationAsync()
     {
-        AnsiConsole.Clear();
-
-        AnsiConsole.MarkupLine("Entering [green]Start Study Session[/] Module...");
+        userInput.WelcomeToModule("Entering [green]Start Study Session[/] Module...");
 
             List<ReadStudyStackDto> studyStackDtos =
                 await studyStackService.GetStudyStacksAsync();
@@ -90,60 +81,45 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             // TODO: Move to input validation helper
             if (!studyStackDtos.Any() )
             {
-                AnsiConsole.MarkupLine(
-                    "There are [red]No Study Stacks found.[/] There must be at least [blue]one[/] Study Stack" +
-                    " in order to have a Study Session.");
-                // TODO: Prompt user to return
+                userInput.WaitForContinue("There are [red]No Study Stacks found.[/] There must be at least [blue]one[/] Study Stack" +
+                    " in order to have a Study Session. Press any key to continue...");
                 return;
             }
 
-            // TODO: Move to input validation helper
-            ReadStudyStackDto selectedStack = AnsiConsole.Prompt(new SelectionPrompt<ReadStudyStackDto>()
-                .Title("Which Study Stack will you use for your session?")
-                .AddChoices(studyStackDtos)
-            );
+            ReadStudyStackDto selectedStack = userInput.GetUserChoice<ReadStudyStackDto>("Which Study Stack will you use for your session?", studyStackDtos);
 
-            // TODO: Move to input invalidation helper
             if (!selectedStack.Flashcards.Any())
             {
-                AnsiConsole.MarkupLine(
-                    $"There are [red]No Flashcards associated with {selectedStack}. There must be at least [blue]one[/] Flashcard" +
-                    " in order to have a Study Session.");
-                // TODO: Prompt user to return
+                userInput.WaitForContinue($"There are [red]No Flashcards associated with {selectedStack}. There must be at least [blue]one[/] Flashcard" +
+                    " in order to have a Study Session. Press any key to continue...");
                 return;
             }
-
-            AnsiConsole.MarkupLine("Beginning [green]Study Session[/]...");
 
             int questionNumber = 0;
             int score = 0;
             foreach (ReadFlashcardDto flashcardDto in selectedStack.Flashcards)
             {
                 questionNumber++;
-                AnsiConsole.MarkupLine($"[green]Question {questionNumber}[/]");
-                AnsiConsole.MarkupLine(flashcardDto.FrontText);
+                userInput.DisplayQuestion(flashcardDto.FrontText, questionNumber);
+                userInput.WaitForContinue("Press any key to see the answer...");
 
-                AnsiConsole.Ask<char>("Press enter to see the answer.");
-                
-                AnsiConsole.MarkupLine($"[green]Answer[/]");
-                AnsiConsole.MarkupLine(flashcardDto.BackText);
+                userInput.DisplayAnswer(flashcardDto.BackText);
 
-                char response = AnsiConsole.Prompt<char>(new SelectionPrompt<char>()
-                    .Title("Did you get the answer correct?")
-                    .AddChoices(['Y', 'N'])
-                );
+                char response = userInput.GetUserChoice<char>("Did you get the answer correct?", ['y', 'n']);
 
-                if (response == 'Y')
+                if (response == 'y')
                     score++;
             }
 
             if (await studySessionService.CreateStudySessionAsync(new CreateStudySessionDto(selectedStack.Id, score,
                     DateTime.Now)) == -1)
             {
-                AnsiConsole.MarkupLine("[red]Error; there was a problem creating the study session![/]");
+                userInput.WaitForContinue(
+                    "[red}Error; there was a problem creating the Study Session![/] Returning to main menu...");
                 return;
             }
 
-            AnsiConsole.MarkupLine($"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]");
+            userInput.DisplayScore(score, questionNumber);
+            //AnsiConsole.MarkupLine($"Study Session [green]complete[/]. Your score was; [green]{score}/{questionNumber}[/]");
     }
 }

@@ -15,7 +15,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
         {
             await using SqlConnection connection = new(connectionString.Value); await connection.OpenAsync();
 
-            await using SqlCommand command = new("SELECT * FROM dbo.StuyStacks WHERE Id = @Id", connection);
+            await using SqlCommand command = new("SELECT * FROM dbo.StudyStacks WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Id", id);
 
             await using SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -56,7 +56,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand studyStackCommand = new(
-                $"SELECT * FROM dbo.StudySacks", connection);
+                $"SELECT * FROM dbo.StudyStacks", connection);
 
             List<StudyStack> studyStacks = [];
             await using SqlDataReader studyStackReader = await studyStackCommand.ExecuteReaderAsync();
@@ -96,7 +96,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new(
-                $"INSERT INTO dbo.StdyStacks (Name) VALUES (@Name)", connection);
+                $"INSERT INTO dbo.StudyStacks (Name) VALUES (@Name)", connection);
             command.Parameters.AddWithValue("@Name", studyStack.Name);
             return await command.ExecuteNonQueryAsync();
         }
@@ -119,7 +119,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
-                $"UPDATE dbo.StudyStcks SET Name = @Name WHERE Id = @Id", connection);
+                $"UPDATE dbo.StudyStacks SET Name = @Name WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Name", studyStack.Name);
             command.Parameters.AddWithValue("@Id", studyStack.Id);
             return await command.ExecuteNonQueryAsync();
@@ -142,7 +142,7 @@ internal class StudyStackRepository(ConnectionString connectionString, IFlashcar
             await connection.OpenAsync();
 
             await using SqlCommand command = new SqlCommand(
-                $"DELETE FROM dbo.StudyStcks WHERE Id = @Id", connection);
+                $"DELETE FROM dbo.StudyStacks WHERE Id = @Id", connection);
             command.Parameters.AddWithValue("@Id", studyStack.Id);
             return await command.ExecuteNonQueryAsync();
         }
