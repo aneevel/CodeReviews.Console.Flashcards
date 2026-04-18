@@ -93,14 +93,5 @@
     - [ ] Test Stack Functionality
     - [ ] Test Card Functionality
     - [ ] Test Study Session Functionality
-  - [ ] Clean up UI/UX
-    - [ ] Create User Input Class
-      - [ ] Create validator (if necessary)
-      - [ ] Start by sketching out interface in controller classes
-        - [ ] Sketch out UserInput class
-          - [ ] Sketch out WelcomeToModule method
-          - [ ] Sketch out GetUserChoice
-            - [ ] Handle string, generic types, bool indicating getDisplayName
-          - [ ] Sketch out WaitForContinue 
-          - [ ] Sketch out GetUserInput
-            - [ ] Handle generic types
+  - [x] Clean up UI/UX
+    - [x] Create User Input Class

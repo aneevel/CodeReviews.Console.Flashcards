@@ -2,7 +2,7 @@ using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Utilities;
 
-internal class UserInput
+public class UserInput
 {
     public void WelcomeToModule(string welcomeMessage)
     {

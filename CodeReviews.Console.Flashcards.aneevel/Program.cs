@@ -1,9 +1,20 @@
 ﻿using CodeReviews.Console.Flashcards.aneevel;
+using CodeReviews.Console.Flashcards.aneevel.Controllers;
+using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.Database;
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
+using CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.Services;
+using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.Utilities;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 try
 {
     await Init();
-    await Shutdown();
 }
 catch (Exception ex)
 {
@@ -14,19 +25,55 @@ return;
 
 async Task Init()
 {
-   // TODO: Implement configuration file load
-   
-   // TODO: Implement Logger load
-   
-   // TODO: Setup DI
-   
-   // TODO: Set up connection
+    IConfigurationBuilder configBuilder =
+        new ConfigurationBuilder().AddJsonFile("appsettings.json", false, true);
+    IConfigurationRoot configuration = configBuilder.Build();
 
-   FlashcardsApplication flashcardsApplication = new FlashcardsApplication();
-   await flashcardsApplication.Run();
-}
+    DatabaseSettings? databaseSettings =
+        configuration.GetRequiredSection("DatabaseSettings").Get<DatabaseSettings>();
 
-async Task Shutdown()
-{
-    // TODO: Gracefully shutdown any services/logs/connections
+    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
+    {
+        DataSource = databaseSettings?.DataSource,
+        UserID = databaseSettings?.UserId,
+        Password = databaseSettings?.Password,
+        InitialCatalog = databaseSettings?.InitialCatalog,
+        TrustServerCertificate = databaseSettings!.TrustServerCertificate || false
+    };
+
+    ConnectionString connectionString = new ConnectionString(builder.ConnectionString);
+
+    Log.Logger = new LoggerConfiguration()
+        .MinimumLevel.Debug()
+        .WriteTo.Logger(logger => logger
+            .MinimumLevel.Error()
+            .WriteTo.File(
+                path: "logs/error.txt",
+                rollingInterval: RollingInterval.Day,
+                outputTemplate: "{Timestamp:MM-dd-yyyy HH:mm:ss} [[{Level 3}]] {Message:lj}{NewLine}{Exception}")
+            )
+        .CreateLogger();
+
+    IServiceCollection services = new ServiceCollection()
+        .AddSingleton(connectionString)
+        .AddSingleton<IConfigurationRoot>(configuration)
+        .AddSingleton<UserInput>()
+        .AddScoped<IDatabaseInitializer, SqlServerDatabaseInitializer>()
+        .AddScoped<IStudyStackRepository, StudyStackRepository>()
+        .AddScoped<IFlashcardRepository, FlashcardRepository>()
+        .AddScoped<IStudySessionRepository, StudySessionRepository>()
+        .AddScoped<IStudyStackService, StudyStackService>()
+        .AddScoped<IFlashcardService, FlashcardService>()
+        .AddScoped<IStudySessionService, StudySessionService>()
+        .AddScoped<IFlashcardController, FlashcardController>()
+        .AddScoped<IStudyStacksController, StudyStacksController>()
+        .AddScoped<IStudySessionsController, StudySessionsController>()
+        .AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
+    ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+    await serviceProvider.GetRequiredService<IDatabaseInitializer>().InitializeDatabaseAsync();
+
+    FlashcardsApplication flashcardsApplication = new FlashcardsApplication(serviceProvider.GetRequiredService<IFlashcardController>(), serviceProvider.GetRequiredService<IStudyStacksController>(), serviceProvider.GetRequiredService<IStudySessionsController>(), serviceProvider.GetRequiredService<UserInput>());
+    await flashcardsApplication.Run();
 }

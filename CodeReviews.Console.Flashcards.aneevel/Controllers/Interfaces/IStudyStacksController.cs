@@ -1,6 +1,6 @@
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 
-internal interface IStudyStacksController
+public interface IStudyStacksController
 {
     Task HandleMainMenuSelectionAsync();
     Task HandleCreateOperationAsync();

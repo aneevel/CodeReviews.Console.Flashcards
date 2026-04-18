@@ -1,6 +1,6 @@
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 
-internal interface IFlashcardController
+public interface IFlashcardController
 {
     Task HandleMainMenuSelectionAsync();
     Task HandleCreateOperationAsync();

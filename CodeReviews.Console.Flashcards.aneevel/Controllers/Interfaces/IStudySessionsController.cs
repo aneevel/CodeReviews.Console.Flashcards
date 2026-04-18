@@ -1,6 +1,6 @@
 namespace CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
 
-internal interface IStudySessionsController
+public interface IStudySessionsController
 {
     Task HandleMainMenuSelectionAsync();
     Task HandleStartSessionOperationAsync();
