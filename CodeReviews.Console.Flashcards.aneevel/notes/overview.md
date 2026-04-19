@@ -91,7 +91,7 @@
   - [x] Use DI for services/repos
   - [ ] Testing!
     - [ ] Test Stack Functionality
-    - [ ] Test Card Functionality
+    - [x] Test Card Functionality
     - [ ] Test Study Session Functionality
   - [x] Clean up UI/UX
     - [x] Create User Input Class

@@ -8,7 +8,7 @@ using Spectre.Console;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudySessionRepository(ConnectionString connectionString, IStudyStackRepository studyStackRepository, ILogger<StudySessionRepository> logger) : IStudySessionRepository
+public class StudySessionRepository(ConnectionString connectionString, IStudyStackRepository studyStackRepository, ILogger<StudySessionRepository> logger) : IStudySessionRepository
 {
     public async Task<List<StudySession>> GetStudySessionsAsync()
     {

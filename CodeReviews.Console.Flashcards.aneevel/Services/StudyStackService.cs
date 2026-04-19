@@ -6,7 +6,7 @@ using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
-internal class StudyStackService(IStudyStackRepository repository) : IStudyStackService
+public class StudyStackService(IStudyStackRepository repository) : IStudyStackService
 {
     public async Task<int> CreateStudyStackAsync(CreateStudyStackDto stackDto)
     {

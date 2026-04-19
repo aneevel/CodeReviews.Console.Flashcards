@@ -6,7 +6,7 @@ using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
-internal class StudySessionService(IStudySessionRepository repository) : IStudySessionService
+public class StudySessionService(IStudySessionRepository repository) : IStudySessionService
 {
     public async Task<int> CreateStudySessionAsync(CreateStudySessionDto studySessionDto)
     {

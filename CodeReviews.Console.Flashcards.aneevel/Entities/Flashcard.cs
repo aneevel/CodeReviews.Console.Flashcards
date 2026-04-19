@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
-internal class Flashcard
+public class Flashcard
 {
     [Required]
     public int Id { get; init; }

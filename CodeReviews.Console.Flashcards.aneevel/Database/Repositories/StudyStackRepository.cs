@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository, ILogger<StudyStackRepository> logger) : IStudyStackRepository
+public class StudyStackRepository(ConnectionString connectionString, IFlashcardRepository flashcardRepository, ILogger<StudyStackRepository> logger) : IStudyStackRepository
 {
     public async Task<StudyStack?> GetStudyStackAsync(int id)
     {

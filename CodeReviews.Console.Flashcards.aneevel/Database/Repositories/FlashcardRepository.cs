@@ -4,11 +4,10 @@ using CodeReviews.Console.Flashcards.aneevel.Entities;
 using CodeReviews.Console.Flashcards.aneevel.Utilities;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories;
 
-internal class FlashcardRepository(ConnectionString connectionString, ILogger<FlashcardRepository> logger) : IFlashcardRepository
+public class FlashcardRepository(ConnectionString connectionString, ILogger<FlashcardRepository> logger) : IFlashcardRepository
 {
     public async Task<List<Flashcard>> GetFlashcardsAsync()
     {

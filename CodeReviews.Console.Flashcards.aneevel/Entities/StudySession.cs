@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
-internal class StudySession
+public class StudySession
 {
     public int Id { get; }
     [Required]
@@ -10,6 +10,6 @@ internal class StudySession
     [Required]
     public int Score { get; init; }
 
-    public StudyStack? StudyStack { get; init; }
+    public StudyStack? StudyStack { get; init; } = new StudyStack();
     public int StudyStackId { get; init; }
 }

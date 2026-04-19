@@ -3,12 +3,11 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
-internal class StudyStack
+public class StudyStack
 {
-    [Required]
     public int Id { get; init; }
     
     public string? Name { get; init; }
 
-    public ICollection<Flashcard>? Flashcards { get; init; }
+    public ICollection<Flashcard>? Flashcards { get; init; } = new List<Flashcard>();
 }

@@ -2,7 +2,7 @@ using CodeReviews.Console.Flashcards.aneevel.Entities;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 
-internal interface IFlashcardRepository
+public interface IFlashcardRepository
 {
     Task<List<Flashcard>> GetFlashcardsAsync();
     Task<List<Flashcard>> GetFlashcardsFromStudyStackAsync(int studyStackId);

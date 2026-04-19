@@ -2,7 +2,7 @@ using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
-internal interface IFlashcardService
+public interface IFlashcardService
 {
    Task<int> CreateFlashcardAsync(CreateFlashcardDto flashcardDto);
    Task<List<ReadFlashcardDto>> GetFlashcardsAsync();

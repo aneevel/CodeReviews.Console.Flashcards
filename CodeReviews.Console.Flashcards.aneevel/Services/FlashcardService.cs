@@ -6,7 +6,7 @@ using CodeReviews.Console.Flashcards.aneevel.Services.Interfaces;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Services;
 
-internal class FlashcardService(IFlashcardRepository repository) : IFlashcardService
+public class FlashcardService(IFlashcardRepository repository) : IFlashcardService
 {
     public async Task<int> CreateFlashcardAsync(CreateFlashcardDto flashcardDto)
     {

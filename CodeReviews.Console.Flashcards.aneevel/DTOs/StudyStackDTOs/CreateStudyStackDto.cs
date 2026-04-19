@@ -2,5 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 
-public record CreateStudyStackDto(
-    [Required] string Name);
+public class CreateStudyStackDto()
+{
+    public CreateStudyStackDto(string name) : this()
+    {
+        Name = name;
+    }
+
+    public string Name { get; } = string.Empty;
+
+}

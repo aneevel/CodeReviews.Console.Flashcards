@@ -2,7 +2,7 @@ using CodeReviews.Console.Flashcards.aneevel.Entities;
 
 namespace CodeReviews.Console.Flashcards.aneevel.Database.Repositories.Interfaces;
 
-internal interface IStudyStackRepository
+public interface IStudyStackRepository
 {
    Task<StudyStack?> GetStudyStackAsync(int id);
    Task<List<StudyStack>> GetStudyStacksAsync();
