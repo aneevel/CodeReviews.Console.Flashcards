@@ -39,12 +39,12 @@ public class UserInput
         return AnsiConsole.Ask<T>(message);
     }
 
-    public void DisplayQuestion(string question, int questionNumber)
+    public void DisplayQuestion(string? question, int questionNumber)
     {
         AnsiConsole.MarkupLine($"[green]Question: {questionNumber}[/]\n{question}");
     }
 
-    public void DisplayAnswer(string answer)
+    public void DisplayAnswer(string? answer)
     {
         AnsiConsole.MarkupLine($"[green]Answer: {answer}[/]");
     }

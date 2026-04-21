@@ -18,7 +18,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
         userInput.WelcomeToModule("Welcome to the [green]Study Sessions Module[/]. Please choose the [blue]operation[/] you would like to perform.");
 
         StudySessionMenuOptions option =
-            userInput.GetUserChoice<StudySessionMenuOptions>("Select an [blue]operation[/]:", Enum.GetValues<StudySessionMenuOptions>(), option => option.GetDisplayName());
+            userInput.GetUserChoice("Select an [blue]operation[/]:", Enum.GetValues<StudySessionMenuOptions>(), option => option.GetDisplayName());
 
         switch (option)
         {
@@ -51,7 +51,6 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                 return;
             }
 
-            // TODO: Refactor to dedicated builder class
             Table table = new Table()
                 .DoubleBorder()
                 .BorderColor(Color.Aqua)
@@ -78,7 +77,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
             List<ReadStudyStackDto> studyStackDtos =
                 await studyStackService.GetStudyStacksAsync();
 
-            // TODO: Move to input validation helper
+            // : Move to input validation helper
             if (!studyStackDtos.Any() )
             {
                 userInput.WaitForContinue("There are [red]No Study Stacks found.[/] There must be at least [blue]one[/] Study Stack" +
@@ -86,7 +85,7 @@ internal class StudySessionsController(IStudyStackService studyStackService, ISt
                 return;
             }
 
-            ReadStudyStackDto selectedStack = userInput.GetUserChoice<ReadStudyStackDto>("Which Study Stack will you use for your session?", studyStackDtos);
+            ReadStudyStackDto selectedStack = userInput.GetUserChoice("Which Study Stack will you use for your session?", studyStackDtos);
 
             if (!selectedStack.Flashcards.Any())
             {

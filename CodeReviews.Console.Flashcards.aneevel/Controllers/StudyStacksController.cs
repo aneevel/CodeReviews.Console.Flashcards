@@ -17,7 +17,7 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
            );
 
         StackMenuOptions option =
-            userInput.GetUserChoice<StackMenuOptions>("Select an [blue]operation[/]:", Enum.GetValues<StackMenuOptions>(), option => option.GetDisplayName());
+            userInput.GetUserChoice("Select an [blue]operation[/]:", Enum.GetValues<StackMenuOptions>(), option => option.GetDisplayName());
 
         switch (option)
         {
@@ -67,7 +67,7 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
                 return;
             }
 
-            // TODO: Handle table building
+            // : Handle table building
             Table table = new Table()
                 .HideHeaders()
                 .Border(TableBorder.None);
@@ -76,7 +76,7 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
 
             foreach (ReadStudyStackDto studyStack in studyStacks)
             {
-                table.AddRow(studyStack.Name);
+                table.AddRow(studyStack.Name ?? string.Empty);
             }
 
             Panel panel = new Panel(table)
@@ -102,15 +102,14 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
         }
 
         ReadStudyStackDto selectedStack =
-            userInput.GetUserChoice<ReadStudyStackDto>("Which Study Stack do you want to Edit?", studyStacks);
+            userInput.GetUserChoice("Which Study Stack do you want to Edit?", studyStacks);
 
-            char answer = userInput.GetUserChoice<char>($"You would like to [blue]edit {selectedStack}[/]? (y/n)", ['y', 'n']);
+            char answer = userInput.GetUserChoice($"You would like to [blue]edit {selectedStack}[/]? (y/n)", ['y', 'n']);
 
             switch (answer)
             {
                 case 'y':
                 {
-                    // TODO: Move to edit
                     string newStackName = userInput.GetUserInput<string>("What should the new name of the stack be?");
                     if (await service.UpdateStudyStackAsync(
                             new UpdateStudyStackDto(newStackName, selectedStack.Id)) == -1)
@@ -142,7 +141,7 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
             ReadStudyStackDto selectedStack =
                 userInput.GetUserChoice("Which Study Stack do you want to delete?", studyStacks);
 
-            char answer = userInput.GetUserChoice<char>($"You would like to [red]delete[/] [blue]{selectedStack}[/]? (y/n)", ['y', 'n']);
+            char answer = userInput.GetUserChoice($"You would like to [red]delete[/] [blue]{selectedStack}[/]? (y/n)", ['y', 'n']);
 
             switch (answer)
             {

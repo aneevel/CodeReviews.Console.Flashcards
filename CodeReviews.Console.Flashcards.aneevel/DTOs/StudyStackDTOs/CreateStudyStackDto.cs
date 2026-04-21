@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 
 public class CreateStudyStackDto()

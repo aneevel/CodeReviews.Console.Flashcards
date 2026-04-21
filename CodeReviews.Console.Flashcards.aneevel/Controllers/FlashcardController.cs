@@ -55,7 +55,6 @@ internal class FlashcardController(IFlashcardService flashcardService, IStudySta
             ReadStudyStackDto selectedStack =
                 userInput.GetUserChoice<ReadStudyStackDto>("Which Study Stack will this Flashcard belong to?", studyStacks);
 
-            // TODO: Move to input validation helper
             string newFlashcardFrontText =
                 userInput.GetUserInput<string>("What should the [blue]Front[/] of the Flashcard be?");
             string newFlashcardBackText =

@@ -5,7 +5,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 public class ReadFlashcardDto()
 {
 
-    public ReadFlashcardDto(int id, string frontText, string backText) : this()
+    public ReadFlashcardDto(int id, string? frontText, string? backText) : this()
     {
         Id = id;
         FrontText = frontText;
@@ -17,6 +17,6 @@ public class ReadFlashcardDto()
     }
 
     public int Id { get;  }
-    public string FrontText { get; } = string.Empty;
-    public string BackText { get; } = string.Empty;
+    public string? FrontText { get; } = string.Empty;
+    public string? BackText { get; } = string.Empty;
 }

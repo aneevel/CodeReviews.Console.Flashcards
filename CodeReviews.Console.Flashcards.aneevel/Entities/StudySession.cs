@@ -4,7 +4,7 @@ namespace CodeReviews.Console.Flashcards.aneevel.Entities;
 
 public class StudySession
 {
-    public int Id { get; }
+    public int Id { get;}
     [Required]
     public DateTime Date { get; init; }
     [Required]
