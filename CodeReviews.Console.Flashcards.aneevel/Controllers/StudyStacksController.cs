@@ -1,4 +1,5 @@
 using CodeReviews.Console.Flashcards.aneevel.Controllers.Interfaces;
+using CodeReviews.Console.Flashcards.aneevel.DTOs.FlashcardDTOs;
 using CodeReviews.Console.Flashcards.aneevel.DTOs.StudyStackDTOs;
 using CodeReviews.Console.Flashcards.aneevel.Enums;
 using CodeReviews.Console.Flashcards.aneevel.Extensions;
@@ -67,20 +68,21 @@ internal class StudyStacksController(IStudyStackService service, UserInput userI
                 return;
             }
 
-            // : Handle table building
-            Table table = new Table()
-                .HideHeaders()
-                .Border(TableBorder.None);
-
-            table.AddColumn(new TableColumn("Name"));
+            Tree tree = new Tree("Study Stacks");
 
             foreach (ReadStudyStackDto studyStack in studyStacks)
             {
-                table.AddRow(studyStack.Name ?? string.Empty);
+                TreeNode root = tree.AddNode(studyStack.Name ?? string.Empty);
+
+                int index = 1;
+                foreach (ReadFlashcardDto flashcard in studyStack.Flashcards)
+                {
+                    root.AddNode($"{index} - Question: {flashcard.FrontText} :: Answer: {flashcard.BackText}");
+                    index++;
+                }
             }
 
-            Panel panel = new Panel(table)
-                .Header(new PanelHeader("Study Stacks"))
+            Panel panel = new Panel(tree)
                 .DoubleBorder()
                 .BorderColor(Color.Purple)
                 .Expand();
